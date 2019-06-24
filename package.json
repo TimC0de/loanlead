@@ -3,13 +3,21 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node dist",
+    "build": "npm run build-ts && npm run tslint",
+    "build-ts": "tsc",
+    "watch": "concurrently -k -p \"{name}\" -n \"typescript,node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \" npm run watch-node\"",
+    "watch-ts": "tsc -w",
+    "watch-node": "nodemon dist",
+    "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "dependencies": {
+    "@types/node": "^12.0.8",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "knex": "^0.17.6",
     "morgan": "~1.9.1",
-    "node-sass-middleware": "0.11.0"
+    "mysql": "^2.17.1"
   }
 }
