@@ -1,42 +1,41 @@
-import Controller from "../../../core/controller";
 import DBModel from "../../../core/dbmodel";
 import del from "../../../core/decorators/delete";
 import get from "../../../core/decorators/get";
 import post from "../../../core/decorators/post";
 import put from "../../../core/decorators/put";
-import Entity from "../models/entity";
-import EntityService from "../services/entity_service";
+import LoanType from "../models/loan_type";
+import LoanTypeService from "../services/loan_type_service";
 
-class EntityController extends Controller {
-    private static entityService: EntityService = new EntityService();
+class LoanTypeController {
+    private static loanTypeService: LoanTypeService = new LoanTypeService();
     public static mappings: Array<{method: string, path: string, callback: (req, res) => any}> = [];
 
-    @get("/entities/")
+    @get("/loan_types/")
     public static index(req, res): void {
-        EntityController.entityService.findAll()
+        LoanTypeController.loanTypeService.findAll()
             .then((data) => {
                 res.send(data);
             });
     }
 
-    @get("/entities/:id")
+    @get("/loan_types/:id")
     public static findById(req, res): void {
         const id: number = req.params.id;
 
-        EntityController.entityService.findById(id)
+        LoanTypeController.loanTypeService.findById(id)
             .then((data) => {
                 res.send(data);
             });
     }
 
-    @post("/entities")
-    public static addEntity(req, res): void {
-        const entity: Entity = DBModel.valueOfRequest<Entity>(req.query, Entity);
+    @post("/loan_types")
+    public static addLoanType(req, res): void {
+        const loanType: LoanType = DBModel.valueOfRequest<LoanType>(req.query, LoanType);
 
-        EntityController.entityService.add(entity)
+        LoanTypeController.loanTypeService.add(loanType)
             .then((insertedRowsId) => {
                 if (insertedRowsId) {
-                    EntityController.entityService.findById(insertedRowsId[0])
+                    LoanTypeController.loanTypeService.findById(insertedRowsId[0])
                         .then((insertedEntities) => {
                             res.send(insertedEntities);
                         });
@@ -44,24 +43,24 @@ class EntityController extends Controller {
             });
     }
 
-    @put("/entities/:id")
-    public static updateEntity(req, res): void {
-        const entity: Entity = DBModel.valueOfRequest<Entity>(req.query, Entity);
+    @put("/loan_types/:id")
+    public static updateLoanType(req, res): void {
+        const loanType: LoanType = DBModel.valueOfRequest<LoanType>(req.query, LoanType);
         const id: number = req.params.id;
 
-        EntityController.entityService.update(entity, id)
+        LoanTypeController.loanTypeService.update(loanType, id)
             .then((updatedRowsCount) => {
                 if (updatedRowsCount) {
-                    EntityController.entityService.findById(id)
-                        .then((updatedEntity) => {
-                            res.send(updatedEntity);
+                    LoanTypeController.loanTypeService.findById(id)
+                        .then((updatedLoanType) => {
+                            res.send(updatedLoanType);
                         });
                 }
             });
     }
 
-    @del("/entities/")
-    public static deleteEntities(req, res): void {
+    @del("/loan_types/")
+    public static deleteLoanTypes(req, res): void {
         const id = req.query.id;
         let ids: number[] = [];
 
@@ -71,11 +70,11 @@ class EntityController extends Controller {
             res.send({ message: "No id specified" });
         }
 
-        EntityController.entityService.delete(ids)
+        LoanTypeController.loanTypeService.delete(ids)
             .then((data) => {
                 res.send(data);
             });
     }
 }
 
-export default EntityController;
+export default LoanTypeController;

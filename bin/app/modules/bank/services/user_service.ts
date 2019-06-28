@@ -1,52 +1,46 @@
+import DBModel from "../../../core/dbmodel";
 import DBService from "../../../core/dbservice";
+import PhoneNumber from "../../phone_numbers/models/phone_number";
 import User from "../models/user";
 
 class UserService extends DBService<User> {
     public constructor() {
-        super(User);
+        super(User, User.getTableName());
     }
 
-    public triggerStatus(user: User): User {
+    public test() {
+        return UserService.knex(this.tableName)
+            .column(["*", {users_id: "users.id"}, {phone_numbers_id: "phone_numbers.id"}])
+            .crossJoin("phone_numbers", "users.phone_numbers_id", "phone_numbers.id")
+            .map((row) => {
+                console.log(row);
+
+                return row;
+            });
+    }
+
+    public triggerStatus(user: User) {
         return UserService.knex(this.tableName)
             .where("id", user.id)
             .update({
                 status: user.status === "online" ? "offline" : "online",
-            })
-            .returning("*")
-            .then((data) => {
-                return new User().parseRowToModel(data.pop());
-            })
-            .value();
+            });
     }
 
-    public findOnlineUsers(): User[] {
+    public findOnlineUsers() {
         return UserService.knex(this.tableName)
             .where("status", "online")
-            .then((data) => {
-                data.forEach((row, index) => {
-                    data[index] = new User().parseRowToModel(row);
-                });
-
-                return data;
-            })
-            .value();
+            .map((row) => DBModel.valueOfRow<User>(row, User));
     }
 
-    public findForwardedUsers(): User[] {
+    public findForwardedUsers() {
         return UserService.knex({u: "users", l: "loans_state"})
-            .select(new User().getFields())
+            .select(DBModel.getFields<User>("row", User))
             .where({
                 "l.status": "Forwarded",
                 "l.actioned_by": "u.employee_id",
             })
-            .then((data) => {
-                data.forEach((row, index) => {
-                    data[index] = new User().parseRowToModel(row);
-                });
-
-                return data;
-            })
-            .value();
+            .map((row) => DBModel.valueOfRow<User>(row, User));
     }
 }
 

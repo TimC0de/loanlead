@@ -1,22 +1,94 @@
 import DBModel from "../../../core/dbmodel";
+import column from "../../../core/decorators/column";
+import oneToMany from "../../../core/decorators/oneToMany";
+import oneToOne from "../../../core/decorators/oneToOne";
+import PhoneNumber from "../../phone_numbers/models/phone_number";
+import Role from "./role";
+import Branch from "./branch";
 
 class User extends DBModel {
-    private _id: number;
-    private _employeeId: string;
-    private _roleId: string;
-    private _branchId: number;
-    private _phoneNumbersId: number;
-    private _password: string;
-    private _fullName: string;
-    private _email: string;
-    private _status: string;
-    private _picturePath: string;
-    private _receiveSms: boolean;
-    private _updatedAt: string;
-    private _statusChangeTimestamp: string;
-    private _createdAt: string;
+    @column("id")
+    private _id?: number;
 
-    public getTableName() {
+    @column("employee_id")
+    private _employeeId?: string;
+
+    @oneToMany(Role, "name", "role")
+    @column("role_id")
+    private _roleId?: string;
+
+    @oneToMany(Branch, "id", "branch")
+    @column("branch_id")
+    private _branchId?: number;
+
+    @oneToOne(PhoneNumber, "id", "phoneNumber")
+    @column("phone_numbers_id")
+    private _phoneNumbersId?: number;
+
+    @column("password")
+    private _password?: string;
+
+    @column("full_name")
+    private _fullName?: string;
+
+    @column("email")
+    private _email?: string;
+
+    @column("status")
+    private _status?: string;
+
+    @column("picture_path")
+    private _picturePath?: string;
+
+    @column("receive_sms")
+    private _receiveSms?: boolean;
+
+    @column("updated_at")
+    private _updatedAt?: string;
+
+    @column("status_change_timestamp")
+    private _statusChangeTimestamp?: string;
+
+    @column("created_at")
+    private _createdAt?: string;
+
+    private _phoneNumber?: PhoneNumber;
+    private _role?: Role;
+    private _branch?: Branch;
+
+    public static columns: { [key: string]: any } = {
+        rowModel: { },
+        modelRow: { },
+    };
+
+    public static relations: Array<{
+        relation: string,
+        dbModel: new <T extends DBModel>(model: { [key: string]: any }) => T,
+        targetColumn: string,
+        dbModelColumn: string,
+        relatedModelField: string,
+    }> = [];
+
+    public constructor(model: { [key: string]: any }) {
+        super();
+
+        this.id = model.id;
+        this.employeeId = model.employeeId;
+        this.roleId = model.roleId;
+        this.branchId = model.branchId;
+        this.phoneNumbersId = model.phoneNumbersId;
+        this.password = model.password;
+        this.fullName = model.fullName;
+        this.email = model.email;
+        this.status = model.status;
+        this.picturePath = model.picturePath;
+        this.receiveSms = model.receiveSms;
+        this.updatedAt = model.updatedAt;
+        this.statusChangeTimestamp = model.statusChangeTimestamp;
+        this.createdAt = model.createdAt;
+    }
+
+    public static getTableName() {
         return "users";
     }
 
@@ -130,6 +202,30 @@ class User extends DBModel {
 
     set createdAt(value: string) {
         this._createdAt = value;
+    }
+
+    get phoneNumber(): PhoneNumber {
+        return this._phoneNumber;
+    }
+
+    set phoneNumber(value: PhoneNumber) {
+        this._phoneNumber = value;
+    }
+
+    get role(): Role {
+        return this._role;
+    }
+
+    set role(value: Role) {
+        this._role = value;
+    }
+
+    get branch(): Branch {
+        return this._branch;
+    }
+
+    set branch(value: Branch) {
+        this._branch = value;
     }
 }
 

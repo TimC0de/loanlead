@@ -1,17 +1,62 @@
 import DBModel from "../../../core/dbmodel";
+import column from "../../../core/decorators/column";
 
 class Entity extends DBModel {
-    private _id: number;
-    private _name: string;
-    private _shortName: string;
-    private _boxNumber: string;
-    private _plotNumber: string;
-    private _branchesNumber: number;
-    private _description: string;
-    private _logoPath: string;
-    private _createdAt: string;
+    @column("id")
+    private _id?: number;
 
-    public getTableName() {
+    @column("name")
+    private _name?: string;
+
+    @column("short_name")
+    private _shortName?: string;
+
+    @column("box_number")
+    private _boxNumber?: string;
+
+    @column("plot_number")
+    private _plotNumber?: string;
+
+    @column("branches_number")
+    private _branchesNumber?: number;
+
+    @column("description")
+    private _description?: string;
+
+    @column("logo_path")
+    private _logoPath?: string;
+
+    @column("created_at")
+    private _createdAt?: string;
+
+    public static columns: { [key: string]: any } = {
+        rowModel: { },
+        modelRow: { },
+    };
+
+    public static relations: Array<{
+        relation: string,
+        dbModel: new <T extends DBModel>(model: { [key: string]: any }) => T,
+        targetColumn: string,
+        dbModelColumn: string,
+        relatedModelField: string,
+    }> = [];
+
+    public constructor(model: { [key: string]: any }) {
+        super();
+
+        this.id = model.id;
+        this.name = model.name;
+        this.shortName = model.shortName;
+        this.boxNumber = model.boxNumber;
+        this.plotNumber = model.plotNumber;
+        this.branchesNumber = model.branchesNumber;
+        this.description = model.description;
+        this.logoPath = model.logoPath;
+        this.createdAt = model.createdAt;
+    }
+
+    public static getTableName() {
         return "entities";
     }
 

@@ -1,42 +1,41 @@
-import Controller from "../../../core/controller";
 import DBModel from "../../../core/dbmodel";
 import del from "../../../core/decorators/delete";
 import get from "../../../core/decorators/get";
 import post from "../../../core/decorators/post";
 import put from "../../../core/decorators/put";
-import Entity from "../models/entity";
-import EntityService from "../services/entity_service";
+import SecurityType from "../models/security_type";
+import SecurityTypeService from "../services/security_type_service";
 
-class EntityController extends Controller {
-    private static entityService: EntityService = new EntityService();
+class SecurityTypeController {
+    private static securityTypeService: SecurityTypeService = new SecurityTypeService();
     public static mappings: Array<{method: string, path: string, callback: (req, res) => any}> = [];
 
-    @get("/entities/")
+    @get("/security_types/")
     public static index(req, res): void {
-        EntityController.entityService.findAll()
+        SecurityTypeController.securityTypeService.findAll()
             .then((data) => {
                 res.send(data);
             });
     }
 
-    @get("/entities/:id")
+    @get("/security_types/:id")
     public static findById(req, res): void {
         const id: number = req.params.id;
 
-        EntityController.entityService.findById(id)
+        SecurityTypeController.securityTypeService.findById(id)
             .then((data) => {
                 res.send(data);
             });
     }
 
-    @post("/entities")
-    public static addEntity(req, res): void {
-        const entity: Entity = DBModel.valueOfRequest<Entity>(req.query, Entity);
+    @post("/security_types")
+    public static addSecurityType(req, res): void {
+        const securityType: SecurityType = DBModel.valueOfRequest<SecurityType>(req.query, SecurityType);
 
-        EntityController.entityService.add(entity)
+        SecurityTypeController.securityTypeService.add(securityType)
             .then((insertedRowsId) => {
                 if (insertedRowsId) {
-                    EntityController.entityService.findById(insertedRowsId[0])
+                    SecurityTypeController.securityTypeService.findById(insertedRowsId[0])
                         .then((insertedEntities) => {
                             res.send(insertedEntities);
                         });
@@ -44,24 +43,24 @@ class EntityController extends Controller {
             });
     }
 
-    @put("/entities/:id")
-    public static updateEntity(req, res): void {
-        const entity: Entity = DBModel.valueOfRequest<Entity>(req.query, Entity);
+    @put("/security_types/:id")
+    public static updateSecurityType(req, res): void {
+        const securityType: SecurityType = DBModel.valueOfRequest<SecurityType>(req.query, SecurityType);
         const id: number = req.params.id;
 
-        EntityController.entityService.update(entity, id)
+        SecurityTypeController.securityTypeService.update(securityType, id)
             .then((updatedRowsCount) => {
                 if (updatedRowsCount) {
-                    EntityController.entityService.findById(id)
-                        .then((updatedEntity) => {
-                            res.send(updatedEntity);
+                    SecurityTypeController.securityTypeService.findById(id)
+                        .then((updatedSecurityType) => {
+                            res.send(updatedSecurityType);
                         });
                 }
             });
     }
 
-    @del("/entities/")
-    public static deleteEntities(req, res): void {
+    @del("/security_types/")
+    public static deleteSecurityTypes(req, res): void {
         const id = req.query.id;
         let ids: number[] = [];
 
@@ -71,11 +70,11 @@ class EntityController extends Controller {
             res.send({ message: "No id specified" });
         }
 
-        EntityController.entityService.delete(ids)
+        SecurityTypeController.securityTypeService.delete(ids)
             .then((data) => {
                 res.send(data);
             });
     }
 }
 
-export default EntityController;
+export default SecurityTypeController;

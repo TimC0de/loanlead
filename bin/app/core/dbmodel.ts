@@ -12,53 +12,108 @@ const toCamelCase = (s: string): string => {
         .replace(/_/g, "");
 };
 
+const removeUnderscore = (s: string): string => {
+    return s.replace("_", "");
+};
+
 class DBModel {
-    public getTableName() {
-        return "";
-    }
+    public static columns: { [key: string]: any } = {
+        rowModel: { },
+        modelRow: { },
+    };
 
-    public static parseToRow(model: object): { [key: string]: any } {
+    public static relations: Array<{
+        relation: string,
+        dbModel: new <T extends DBModel>(model: { [key: string]: any }) => T,
+        targetColumn: string,
+        dbModelColumn: string,
+        relatedModelField: string,
+    }> = [];
+
+    public static parseToRow<T extends DBModel>(model: T): { [key: string]: any } {
         const result: { [key: string]: any} = {};
+        let columns: {
+            rowModel: { [key: string]: string },
+            modelRow: { [key: string]: string },
+        } = Object.create(null);
 
-        for (const prop in model) {
-            if (model.hasOwnProperty(prop) && typeof model[prop] !== "function") {
-                result[toSnakeCase(prop)] = model[prop];
+        Object.keys(model.constructor).forEach((key) => {
+            if (key === "columns") {
+                columns = model.constructor[key];
             }
-        }
+        });
+
+        Object.keys(columns.modelRow).forEach((prop) => {
+            result[columns.modelRow[prop]] = model[prop];
+        });
 
         return result;
     }
 
-    public parseRowToModel(row: { [key: string]: any }) {
-        for (const prop in row) {
-            if (row.hasOwnProperty(prop)) {
-                this[toCamelCase(prop)] = row[prop];
-            }
-        }
+    public static valueOfRow<T extends DBModel>(
+        row: { [key: string]: any },
+        modelClass: new (model: { [key: string]: any }) => T,
+    ): T {
+        const result: { [key: string]: any} = {};
+        let columns: {
+            rowModel: { [key: string]: string },
+            modelRow: { [key: string]: string },
+        } = Object.create(null);
 
-        return this;
+        Object.keys(modelClass).forEach((key) => {
+            if (key === "columns") {
+                columns = modelClass[key];
+            }
+        });
+
+        Object.keys(columns.rowModel).forEach((prop) => {
+            result[columns.rowModel[prop]] = row[prop];
+        });
+
+        return new modelClass(result);
     }
 
-    public parseRequestToModel(params: { [key: string]: any}) {
-        for (const prop in params) {
-            if (params.hasOwnProperty(prop)) {
-                this[prop] = params[prop];
-            }
-        }
+    public static valueOfRequest<T extends DBModel>(
+        params: { [key: string]: any},
+        modelClass: new (model: { [key: string]: any }) => T,
+    ): T {
+        const result: { [key: string]: any} = Object.create(null);
+        let columns: {
+            rowModel: { [key: string]: string},
+            modelRow: { [key: string]: string},
+        } = Object.create(null);
 
-        return this;
+        Object.keys(modelClass).forEach((key) => {
+            if (key === "columns") {
+                columns = modelClass[key];
+            }
+        });
+
+        Object.keys(columns.modelRow).forEach((prop) => {
+            result[prop] = params[prop];
+        });
+
+        return new modelClass(result);
     }
 
-    public getFields(): string[] {
-        const fields: string[] = [];
+    public static getFields<T extends DBModel>(
+        fieldsType: string,
+        modelClass: new (model: { [key: string]: any }) => T,
+    ): string[] {
+        let columns: {
+            rowModel: { [key: string]: string },
+            modelRow: { [key: string]: string },
+        } = Object.create(null);
 
-        for (const prop in this) {
-            if (this.hasOwnProperty(prop)) {
-                fields.push(prop);
+        Object.keys(modelClass).forEach((key) => {
+            if (key === "columns") {
+                columns = modelClass[key];
             }
-        }
+        });
 
-        return fields;
+        return fieldsType === "model"
+            ? Object.keys(columns.modelRow)
+            : Object.keys(columns.rowModel);
     }
 }
 

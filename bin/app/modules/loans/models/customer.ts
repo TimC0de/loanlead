@@ -1,32 +1,29 @@
 import DBModel from "../../../core/dbmodel";
 import column from "../../../core/decorators/column";
-import oneToMany from "../../../core/decorators/oneToMany";
-import Entity from "./entity";
+import oneToOne from "../../../core/decorators/oneToOne";
+import PhoneNumber from "../../phone_numbers/models/phone_number";
 
-class Branch extends DBModel {
+class Customer extends DBModel {
     @column("id")
     private _id?: number;
 
-    @oneToMany(Entity, "id", "entity")
-    @column("entity_id")
-    private _entityId?: number;
+    @oneToOne(PhoneNumber, "id", "phoneNumber")
+    @column("phone_numbers_id")
+    private _phoneNumbersId?: number;
 
     @column("name")
     private _name?: string;
 
-    @column("type")
-    private _type?: string;
+    @column("document")
+    private _document?: string;
 
-    @column("district")
-    private _district?: string;
-
-    @column("town")
-    private _town?: string;
+    @column("document_type")
+    private _documentType?: string;
 
     @column("created_at")
     private _createdAt?: string;
 
-    private _entity?: Entity;
+    private _phoneNumber?: PhoneNumber;
 
     public static columns: { [key: string]: any } = {
         rowModel: { },
@@ -45,16 +42,15 @@ class Branch extends DBModel {
         super();
 
         this.id = model.id;
-        this.entityId = model.entityId;
+        this.phoneNumbersId = model.phoneNumbersId;
         this.name = model.name;
-        this.type = model.type;
-        this.district = model.district;
-        this.town = model.town;
+        this.document = model.document;
+        this.documentType = model.documentType;
         this.createdAt = model.createdAt;
     }
 
     public static getTableName() {
-        return "branches";
+        return "customers";
     }
 
     get id(): number {
@@ -65,12 +61,12 @@ class Branch extends DBModel {
         this._id = value;
     }
 
-    get entityId(): number {
-        return this._entityId;
+    get phoneNumbersId(): number {
+        return this._phoneNumbersId;
     }
 
-    set entityId(value: number) {
-        this._entityId = value;
+    set phoneNumbersId(value: number) {
+        this._phoneNumbersId = value;
     }
 
     get name(): string {
@@ -81,28 +77,20 @@ class Branch extends DBModel {
         this._name = value;
     }
 
-    get type(): string {
-        return this._type;
+    get document(): string {
+        return this._document;
     }
 
-    set type(value: string) {
-        this._type = value;
+    set document(value: string) {
+        this._document = value;
     }
 
-    get district(): string {
-        return this._district;
+    get documentType(): string {
+        return this._documentType;
     }
 
-    set district(value: string) {
-        this._district = value;
-    }
-
-    get town(): string {
-        return this._town;
-    }
-
-    set town(value: string) {
-        this._town = value;
+    set documentType(value: string) {
+        this._documentType = value;
     }
 
     get createdAt(): string {
@@ -113,13 +101,13 @@ class Branch extends DBModel {
         this._createdAt = value;
     }
 
-    get entity(): Entity {
-        return this._entity;
+    get phoneNumber(): PhoneNumber {
+        return this._phoneNumber;
     }
 
-    set entity(value: Entity) {
-        this._entity = value;
+    set phoneNumber(value: PhoneNumber) {
+        this._phoneNumber = value;
     }
 }
 
-export default Branch;
+export default Customer;

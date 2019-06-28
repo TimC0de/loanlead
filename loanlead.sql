@@ -960,7 +960,7 @@ BEGIN
 
     FROM previous_loanlead.auditing AS a,
 
-         previous_loanlead.users AS u
+         users AS u
 
     WHERE u.id = a.action_by;
 

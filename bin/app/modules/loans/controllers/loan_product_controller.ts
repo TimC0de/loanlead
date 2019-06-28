@@ -1,42 +1,41 @@
-import Controller from "../../../core/controller";
 import DBModel from "../../../core/dbmodel";
 import del from "../../../core/decorators/delete";
 import get from "../../../core/decorators/get";
 import post from "../../../core/decorators/post";
 import put from "../../../core/decorators/put";
-import Entity from "../models/entity";
-import EntityService from "../services/entity_service";
+import LoanProduct from "../models/loan_product";
+import LoanProductService from "../services/loan_product_service";
 
-class EntityController extends Controller {
-    private static entityService: EntityService = new EntityService();
+class LoanProductController {
+    private static loanProductService: LoanProductService = new LoanProductService();
     public static mappings: Array<{method: string, path: string, callback: (req, res) => any}> = [];
 
-    @get("/entities/")
+    @get("/loan_products/")
     public static index(req, res): void {
-        EntityController.entityService.findAll()
+        LoanProductController.loanProductService.findAll()
             .then((data) => {
                 res.send(data);
             });
     }
 
-    @get("/entities/:id")
+    @get("/loan_products/:id")
     public static findById(req, res): void {
         const id: number = req.params.id;
 
-        EntityController.entityService.findById(id)
+        LoanProductController.loanProductService.findById(id)
             .then((data) => {
                 res.send(data);
             });
     }
 
-    @post("/entities")
-    public static addEntity(req, res): void {
-        const entity: Entity = DBModel.valueOfRequest<Entity>(req.query, Entity);
+    @post("/loan_products")
+    public static addLoanProduct(req, res): void {
+        const loanProduct: LoanProduct = DBModel.valueOfRequest<LoanProduct>(req.query, LoanProduct);
 
-        EntityController.entityService.add(entity)
+        LoanProductController.loanProductService.add(loanProduct)
             .then((insertedRowsId) => {
                 if (insertedRowsId) {
-                    EntityController.entityService.findById(insertedRowsId[0])
+                    LoanProductController.loanProductService.findById(insertedRowsId[0])
                         .then((insertedEntities) => {
                             res.send(insertedEntities);
                         });
@@ -44,24 +43,24 @@ class EntityController extends Controller {
             });
     }
 
-    @put("/entities/:id")
-    public static updateEntity(req, res): void {
-        const entity: Entity = DBModel.valueOfRequest<Entity>(req.query, Entity);
+    @put("/loan_products/:id")
+    public static updateLoanProduct(req, res): void {
+        const loanProduct: LoanProduct = DBModel.valueOfRequest<LoanProduct>(req.query, LoanProduct);
         const id: number = req.params.id;
 
-        EntityController.entityService.update(entity, id)
+        LoanProductController.loanProductService.update(loanProduct, id)
             .then((updatedRowsCount) => {
                 if (updatedRowsCount) {
-                    EntityController.entityService.findById(id)
-                        .then((updatedEntity) => {
-                            res.send(updatedEntity);
+                    LoanProductController.loanProductService.findById(id)
+                        .then((updatedLoanProduct) => {
+                            res.send(updatedLoanProduct);
                         });
                 }
             });
     }
 
-    @del("/entities/")
-    public static deleteEntities(req, res): void {
+    @del("/loan_products/")
+    public static deleteLoanProducts(req, res): void {
         const id = req.query.id;
         let ids: number[] = [];
 
@@ -71,11 +70,11 @@ class EntityController extends Controller {
             res.send({ message: "No id specified" });
         }
 
-        EntityController.entityService.delete(ids)
+        LoanProductController.loanProductService.delete(ids)
             .then((data) => {
                 res.send(data);
             });
     }
 }
 
-export default EntityController;
+export default LoanProductController;
