@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import Controller from "../../../core/controller";
 import DBModel from "../../../core/dbmodel";
 import del from "../../../core/decorators/delete";
@@ -8,6 +9,7 @@ import PhoneNumber from "../../phone_numbers/models/phone_number";
 import PhoneNumberService from "../../phone_numbers/services/phone_number_service";
 import User from "../models/user";
 import UserService from "../services/user_service";
+import config from "../../../config";
 
 class UserController extends Controller {
     private static userService: UserService = new UserService();
@@ -44,6 +46,74 @@ class UserController extends Controller {
                             res.send(insertedUsers);
                         });
                 }
+            });
+    }
+
+    @post("/users/login")
+    public static login(req, res) {
+        const employeeId: string = req.query.employeeId;
+
+        if (employeeId) {
+            const password: string = req.query.password;
+
+            UserController.userService.findUserByEmployeeId(employeeId)
+                .then((users: User[]) => {
+                    if (users) {
+                        const user: User = users.pop();
+
+                        if (password) {
+                            bcrypt.compare(password, user.password)
+                                .then((match) => {
+                                    if (match) {
+                                        req.session.user = user;
+
+                                        res.send(user);
+                                    } else {
+                                        res.send("Username or password are wrong");
+                                    }
+                                });
+                        } else {
+                            res.send("Please, provide the password");
+                        }
+                    } else {
+                        res.send("Username or password are wrong");
+                    }
+                });
+        } else {
+            res.send("Please, provide employeeId");
+        }
+    }
+
+    @post("/users/register")
+    public static registerNewUser(req, res) {
+        const user: User =
+            DBModel.valueOfRequest<User>(req.query, User);
+
+        user.phoneNumber =
+            DBModel.valueOfRequest<PhoneNumber>(req.query, PhoneNumber);
+
+        if (UserController.phoneService.isUnique("firstPhoneNumber", user.phoneNumber.firstPhoneNumber)) {
+            res.send("firstPhoneNumber: not unique");
+        }
+
+        if (UserController.phoneService.isUnique("secondPhoneNumber", user.phoneNumber.secondPhoneNumber)) {
+            res.send("secondPhoneNumber: not unique");
+        }
+
+        bcrypt.genSalt(config.saltRounds)
+            .then((salt) => {
+                bcrypt.hash(user.password, salt)
+                    .then((hash) => {
+                        UserController.userService.add(user)
+                            .then((insertedUsersId) => {
+                                if (insertedUsersId) {
+                                    res.send("OK");
+                                }
+                            })
+                            .catch((reason) => {
+                                res.send("Failed");
+                            });
+                    });
             });
     }
 
