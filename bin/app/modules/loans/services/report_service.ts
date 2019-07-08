@@ -9,7 +9,9 @@ class ReportService extends DBService<Report> {
     }
 
     public findByLoanId(loanId: number) {
-        return this.find("reports.loan_id", loanId);
+        return this.find({
+            "reports.loan_id": loanId,
+        });
     }
 
     public findBetweenDatesOrderByLoanId(firstDate: string, secondDate: string) {

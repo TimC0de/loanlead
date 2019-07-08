@@ -1,5 +1,6 @@
 import DBModel from "../../../core/dbmodel";
 import SecurityType from "./security_type";
+import manyToMany from "../../../core/decorators/manyToMany";
 
 class Loan extends DBModel {
     private _id?: number;
@@ -17,6 +18,7 @@ class Loan extends DBModel {
     private _actionedAt?: string;
     private _stagedAt?: string;
 
+    @manyToMany(SecurityType, "security_type_id", "loan_id", "loans_security_types")
     private _securityTypes?: SecurityType[];
 
     public static columns: { [key: string]: any } = {
@@ -30,6 +32,14 @@ class Loan extends DBModel {
         targetColumn: string,
         dbModelColumn: string,
         relatedModelField: string,
+    }> = [];
+
+    public static manyToManyRelations: Array<{
+        relatedModelClass: new <T extends DBModel>(model: { [key: string]: any }) => T,
+        bridgeTableRelatedModelColumn: string,
+        bridgeTableRelatedModel: string,
+        bridgeTableName: string,
+        relatedModel: string,
     }> = [];
 
     public constructor(model: { [key: string]: any }) {
@@ -49,6 +59,10 @@ class Loan extends DBModel {
         this.comment = model.comment;
         this.actionedAt = model.actionedAt;
         this.stagedAt = model.stagedAt;
+    }
+
+    public static getTableName() {
+        return "loans";
     }
 
     get id(): number {

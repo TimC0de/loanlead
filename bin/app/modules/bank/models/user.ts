@@ -3,8 +3,8 @@ import column from "../../../core/decorators/column";
 import oneToMany from "../../../core/decorators/oneToMany";
 import oneToOne from "../../../core/decorators/oneToOne";
 import PhoneNumber from "../../phone_numbers/models/phone_number";
-import Role from "./role";
 import Branch from "./branch";
+import Role from "./role";
 
 class User extends DBModel {
     @column("id")

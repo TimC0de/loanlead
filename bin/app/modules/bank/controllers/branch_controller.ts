@@ -34,13 +34,8 @@ class BranchController extends Controller {
         const branch: Branch = DBModel.valueOfRequest<Branch>(req.query, Branch);
 
         BranchController.branchService.add(branch)
-            .then((insertedRowsId) => {
-                if (insertedRowsId) {
-                    BranchController.branchService.findById(insertedRowsId[0])
-                        .then((insertedBranches) => {
-                            res.send(insertedBranches);
-                        });
-                }
+            .then((branches) => {
+                res.send(branches);
             });
     }
 
@@ -50,28 +45,16 @@ class BranchController extends Controller {
         const id: number = req.params.id;
 
         BranchController.branchService.update(branch, id)
-            .then((updatedRowsCount) => {
-                if (updatedRowsCount) {
-                    BranchController.branchService.findById(id)
-                        .then((updatedBranch) => {
-                            res.send(updatedBranch);
-                        });
-                }
+            .then((branches) => {
+                res.send(branches);
             });
     }
 
     @del("/branches/")
     public static deleteBranches(req, res): void {
         const id = req.query.id;
-        let ids: number[] = [];
 
-        if (req.query.id) {
-            ids = typeof id === "string" ? ids.concat(parseInt(id, 10)) : ids.concat(ids);
-        } else {
-            res.send({ message: "No id specified" });
-        }
-
-        BranchController.branchService.delete(ids)
+        BranchController.branchService.delete(id)
             .then((data) => {
                 res.send({ deletedRows: data });
             });

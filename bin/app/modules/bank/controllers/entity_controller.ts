@@ -34,13 +34,8 @@ class EntityController extends Controller {
         const entity: Entity = DBModel.valueOfRequest<Entity>(req.query, Entity);
 
         EntityController.entityService.add(entity)
-            .then((insertedRowsId) => {
-                if (insertedRowsId) {
-                    EntityController.entityService.findById(insertedRowsId[0])
-                        .then((insertedEntities) => {
-                            res.send(insertedEntities);
-                        });
-                }
+            .then((entities) => {
+                res.send(entities);
             });
     }
 
@@ -50,28 +45,16 @@ class EntityController extends Controller {
         const id: number = req.params.id;
 
         EntityController.entityService.update(entity, id)
-            .then((updatedRowsCount) => {
-                if (updatedRowsCount) {
-                    EntityController.entityService.findById(id)
-                        .then((updatedEntity) => {
-                            res.send(updatedEntity);
-                        });
-                }
+            .then((entities) => {
+                res.send(entities);
             });
     }
 
     @del("/entities/")
     public static deleteEntities(req, res): void {
         const id = req.query.id;
-        let ids: number[] = [];
 
-        if (req.query.id) {
-            ids = typeof id === "string" ? ids.concat(parseInt(id, 10)) : ids.concat(ids);
-        } else {
-            res.send({ message: "No id specified" });
-        }
-
-        EntityController.entityService.delete(ids)
+        EntityController.entityService.delete(id)
             .then((data) => {
                 res.send(data);
             });

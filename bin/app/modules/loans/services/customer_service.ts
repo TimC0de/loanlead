@@ -14,7 +14,9 @@ class CustomerService extends DBService<Customer> {
     }
 
     public findByDocument(document: string) {
-        return this.find("customers.document", document);
+        return this.find({
+            "customers.document": document,
+        });
     }
 }
 

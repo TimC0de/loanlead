@@ -30,6 +30,14 @@ class DBModel {
         relatedModelField: string,
     }> = [];
 
+    public static manyToManyRelations: Array<{
+        relatedModelClass: new <T extends DBModel>(model: { [key: string]: any }) => T,
+        bridgeTableRelatedModelColumn: string,
+        bridgeTableRelatedModel: string,
+        bridgeTableName: string,
+        relatedModel: string,
+    }> = [];
+
     public static parseToRow<T extends DBModel>(model: T): { [key: string]: any } {
         const result: { [key: string]: any} = {};
         let columns: {
@@ -53,21 +61,23 @@ class DBModel {
     public static valueOfRow<T extends DBModel>(
         row: { [key: string]: any },
         modelClass: new (model: { [key: string]: any }) => T,
+        rowColumnPrefix?: string,
     ): T {
-        const result: { [key: string]: any} = {};
-        let columns: {
-            rowModel: { [key: string]: string },
-            modelRow: { [key: string]: string },
-        } = Object.create(null);
+        const result: { [key: string]: any} = Object.create(null);
+        let columns: { [key: string]: any } = Object.create(null);
 
         Object.keys(modelClass).forEach((key) => {
             if (key === "columns") {
-                columns = modelClass[key];
+                columns = modelClass[key].rowModel;
             }
         });
 
-        Object.keys(columns.rowModel).forEach((prop) => {
-            result[columns.rowModel[prop]] = row[prop];
+        Object.keys(columns).forEach((prop) => {
+            result[columns[prop]] = row[
+                rowColumnPrefix
+                    ? `${rowColumnPrefix}${prop}`
+                    : prop
+                ];
         });
 
         return new modelClass(result);

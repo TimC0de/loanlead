@@ -33,13 +33,8 @@ class LoanProductController {
         const loanProduct: LoanProduct = DBModel.valueOfRequest<LoanProduct>(req.query, LoanProduct);
 
         LoanProductController.loanProductService.add(loanProduct)
-            .then((insertedRowsId) => {
-                if (insertedRowsId) {
-                    LoanProductController.loanProductService.findById(insertedRowsId[0])
-                        .then((insertedEntities) => {
-                            res.send(insertedEntities);
-                        });
-                }
+            .then((loanProducts) => {
+                res.send(loanProducts);
             });
     }
 
@@ -49,28 +44,16 @@ class LoanProductController {
         const id: number = req.params.id;
 
         LoanProductController.loanProductService.update(loanProduct, id)
-            .then((updatedRowsCount) => {
-                if (updatedRowsCount) {
-                    LoanProductController.loanProductService.findById(id)
-                        .then((updatedLoanProduct) => {
-                            res.send(updatedLoanProduct);
-                        });
-                }
+            .then((loanProducts) => {
+                res.send(loanProducts);
             });
     }
 
     @del("/loan_products/")
     public static deleteLoanProducts(req, res): void {
         const id = req.query.id;
-        let ids: number[] = [];
 
-        if (req.query.id) {
-            ids = typeof id === "string" ? ids.concat(parseInt(id, 10)) : ids.concat(ids);
-        } else {
-            res.send({ message: "No id specified" });
-        }
-
-        LoanProductController.loanProductService.delete(ids)
+        LoanProductController.loanProductService.delete(id)
             .then((data) => {
                 res.send(data);
             });

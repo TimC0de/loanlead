@@ -1,0 +1,76 @@
+@import "../../common/css/fonts";
+@import "../../common/css/colors";
+
+#login-container {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    > * {
+        padding: 40px;
+
+        header {
+            font-family: $font-roboto;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 30px;
+            letter-spacing: 0.07em;
+        }
+
+        section {
+            form {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                height: 230px;
+            }
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+
+            button {
+                border: 0;
+                border-radius: 30px;
+
+                font-family: $font-roboto;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 17px;
+                letter-spacing: 0.05em;
+
+                padding: 15px 30px;
+
+                transition: .3s;
+                box-shadow: 0 0 0 #aaa;
+
+                &:hover {
+                    box-shadow: 0 0 10px #aaa;
+                }
+
+                @media screen and (max-width: 767.999999px) {
+                    margin: 10px 0;
+                }
+
+                &:first-child {
+                    background-color: $l-blue;
+                    color: white;
+
+                    &.disabled {
+                        background-color: #ccc;
+                    }
+                }
+
+                &:last-child {
+                    color: $l-blue;
+                    border: 1.5px solid $l-blue;
+                    background-color: white;
+                }
+            }
+        }
+    }
+}

@@ -1,5 +1,6 @@
 import ConnectSessionKnex from "connect-session-knex";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import express from "express";
 import session from "express-session";
 import Knex from "knex";
@@ -32,18 +33,25 @@ const store = new KnexStore({
 DBService.knex = knex;
 
 // Encrypting all passwords
-if (true) {
+if (false) {
     MigrationService.migrate();
 }
 
 // creating server object
 const app = express();
+const router = express.Router();
+
+// register mappings
+mappings.forEach((mapping) => {
+    router[mapping.method](mapping.path, mapping.callback);
+});
 
 // setting all middlewares
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(cors());
 app.use(session({
     secret: "loanleadSessionSecret",
     resave: false,
@@ -54,9 +62,11 @@ app.use(session({
     store,
 }));
 
-// registering mappings
-mappings.forEach((mapping) => {
-    app[mapping.method](mapping.path, mapping.callback);
+app.use("/api", router);
+app.use((req, res, next) => {
+    res.type("json");
+
+    next();
 });
 
 export default app;

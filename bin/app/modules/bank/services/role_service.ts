@@ -10,6 +10,11 @@ class RoleService extends DBService<Role> {
         return RoleService.knex(this.tableName)
             .update({
                 send_sms: enable,
+            })
+            .then((updatedRowsCount) => {
+                if (updatedRowsCount) {
+                    return this.findById(id);
+                }
             });
     }
 }

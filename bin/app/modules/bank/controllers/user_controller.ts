@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import config from "../../../config";
 import Controller from "../../../core/controller";
 import DBModel from "../../../core/dbmodel";
 import del from "../../../core/decorators/delete";
@@ -9,7 +10,6 @@ import PhoneNumber from "../../phone_numbers/models/phone_number";
 import PhoneNumberService from "../../phone_numbers/services/phone_number_service";
 import User from "../models/user";
 import UserService from "../services/user_service";
-import config from "../../../config";
 
 class UserController extends Controller {
     private static userService: UserService = new UserService();
@@ -39,49 +39,39 @@ class UserController extends Controller {
         const user: User = DBModel.valueOfRequest<User>(req.query, User);
 
         UserController.userService.add(user)
-            .then((insertedRowsId) => {
-                if (insertedRowsId) {
-                    UserController.userService.findById(insertedRowsId[0])
-                        .then((insertedUsers) => {
-                            res.send(insertedUsers);
-                        });
-                }
+            .then((users) => {
+                res.send(users);
             });
     }
 
     @post("/users/login")
     public static login(req, res) {
-        const employeeId: string = req.query.employeeId;
+        const employeeId: string = req.body.employeeId;
+        const password: string = req.body.password;
 
-        if (employeeId) {
-            const password: string = req.query.password;
+        UserController.userService.findUserByEmployeeId(employeeId)
+            .then((users: User[]) => {
+                if (users.length) {
+                    const user: User = users.pop();
 
-            UserController.userService.findUserByEmployeeId(employeeId)
-                .then((users: User[]) => {
-                    if (users) {
-                        const user: User = users.pop();
+                    bcrypt.compare(password, user.password)
+                        .then((match) => {
+                            if (match) {
+                                req.session.user = user;
 
-                        if (password) {
-                            bcrypt.compare(password, user.password)
-                                .then((match) => {
-                                    if (match) {
-                                        req.session.user = user;
-
-                                        res.send(user);
-                                    } else {
-                                        res.send("Username or password are wrong");
-                                    }
+                                res.send(user);
+                            } else {
+                                res.send({
+                                    message: "Username or password are wrong",
                                 });
-                        } else {
-                            res.send("Please, provide the password");
-                        }
-                    } else {
-                        res.send("Username or password are wrong");
-                    }
-                });
-        } else {
-            res.send("Please, provide employeeId");
-        }
+                            }
+                        });
+                } else {
+                    res.send({
+                        message: "Username or password are wrong",
+                    });
+                }
+            });
     }
 
     @post("/users/register")
@@ -136,15 +126,8 @@ class UserController extends Controller {
     @del("/users")
     public static deleteUsers(req, res) {
         const id = req.query.id;
-        let ids: number[] = [];
 
-        if (req.query.id) {
-            ids = typeof id === "string" ? ids.concat(parseInt(id, 10)) : ids.concat(ids);
-        } else {
-            res.send({ message: "No id specified" });
-        }
-
-        UserController.userService.delete(ids)
+        UserController.userService.delete(id)
             .then((data) => {
                 res.send(data);
             });

@@ -1,0 +1,49 @@
+<div id="login-container">
+    <div class="col-xl-4 col-lg-5 col-md-6 col-sm-7">
+        <header>
+            Log In
+        </header>
+        <hr>
+        <section>
+            <form [formGroup]="loginForm">
+                <div class="text-input-control">
+                    <label for="employeeId">
+                        Employee Id
+                        <span class="feedback"></span>
+                    </label>
+                    <input id="employeeId"
+                           type="text"
+                           placeholder="Employee Id"
+                           formControlName="employeeId"
+                           (input)="validate()"
+                           required>
+                </div>
+                <div class="text-input-control">
+                    <label for="password">
+                        Password
+                        <span class="feedback"></span>
+                    </label>
+                    <input id="password"
+                           type="password"
+                           placeholder="Password"
+                           formControlName="password"
+                           (input)="validate()"
+                           required>
+                </div>
+            </form>
+        </section>
+        <hr>
+        <footer class="flex-md-row flex-column">
+            <button class="col-md-5 col-12"
+                    [class.disabled]="!loginForm.valid"
+                    (click)="submit()">SIGN IN
+            </button>
+            <button class="col-md-5 col-12">SIGN UP</button>
+        </footer>
+    </div>
+</div>
+
+<div class="info-div error">
+    <div class="material-icons">error_outline</div>
+    Please, provide the right username and password
+</div>

@@ -33,13 +33,8 @@ class RoleController extends Controller {
         const role: Role = DBModel.valueOfRequest<Role>(req.query, Role);
 
         RoleController.roleService.add(role)
-            .then((insertedRowsId) => {
-                if (insertedRowsId) {
-                    RoleController.roleService.findById(insertedRowsId[0])
-                        .then((insertedRole) => {
-                            res.send(insertedRole);
-                        });
-                }
+            .then((roles) => {
+                res.send(roles);
             });
     }
 
@@ -49,13 +44,8 @@ class RoleController extends Controller {
         const id: number = req.params.id;
 
         RoleController.roleService.update(role, id)
-            .then((updatedRowsCount) => {
-                if (updatedRowsCount) {
-                    RoleController.roleService.findById(id)
-                        .then((updatedRole) => {
-                            res.send(updatedRole);
-                        });
-                }
+            .then((roles) => {
+                res.send(roles);
             });
     }
 
@@ -65,13 +55,8 @@ class RoleController extends Controller {
         const enable: boolean = req.params.enable === "enable";
 
         RoleController.roleService.triggerSmsNotifications(id, enable)
-            .then((updatedRowsCount) => {
-                if (updatedRowsCount) {
-                    RoleController.roleService.findById(id)
-                        .then((updatedRole) => {
-                            res.send(updatedRole);
-                        });
-                }
+            .then((roles) => {
+                res.send(roles);
             });
     }
 }

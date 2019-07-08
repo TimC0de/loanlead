@@ -33,13 +33,8 @@ class LoanTypeController {
         const loanType: LoanType = DBModel.valueOfRequest<LoanType>(req.query, LoanType);
 
         LoanTypeController.loanTypeService.add(loanType)
-            .then((insertedRowsId) => {
-                if (insertedRowsId) {
-                    LoanTypeController.loanTypeService.findById(insertedRowsId[0])
-                        .then((insertedEntities) => {
-                            res.send(insertedEntities);
-                        });
-                }
+            .then((loanTypes) => {
+                res.send(loanTypes);
             });
     }
 
@@ -49,28 +44,16 @@ class LoanTypeController {
         const id: number = req.params.id;
 
         LoanTypeController.loanTypeService.update(loanType, id)
-            .then((updatedRowsCount) => {
-                if (updatedRowsCount) {
-                    LoanTypeController.loanTypeService.findById(id)
-                        .then((updatedLoanType) => {
-                            res.send(updatedLoanType);
-                        });
-                }
+            .then((loanTypes) => {
+                res.send(loanTypes);
             });
     }
 
     @del("/loan_types/")
     public static deleteLoanTypes(req, res): void {
         const id = req.query.id;
-        let ids: number[] = [];
 
-        if (req.query.id) {
-            ids = typeof id === "string" ? ids.concat(parseInt(id, 10)) : ids.concat(ids);
-        } else {
-            res.send({ message: "No id specified" });
-        }
-
-        LoanTypeController.loanTypeService.delete(ids)
+        LoanTypeController.loanTypeService.delete(id)
             .then((data) => {
                 res.send(data);
             });

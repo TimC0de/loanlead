@@ -33,13 +33,8 @@ class SecurityTypeController {
         const securityType: SecurityType = DBModel.valueOfRequest<SecurityType>(req.query, SecurityType);
 
         SecurityTypeController.securityTypeService.add(securityType)
-            .then((insertedRowsId) => {
-                if (insertedRowsId) {
-                    SecurityTypeController.securityTypeService.findById(insertedRowsId[0])
-                        .then((insertedEntities) => {
-                            res.send(insertedEntities);
-                        });
-                }
+            .then((securityTypes) => {
+                res.send(securityTypes);
             });
     }
 
@@ -49,28 +44,16 @@ class SecurityTypeController {
         const id: number = req.params.id;
 
         SecurityTypeController.securityTypeService.update(securityType, id)
-            .then((updatedRowsCount) => {
-                if (updatedRowsCount) {
-                    SecurityTypeController.securityTypeService.findById(id)
-                        .then((updatedSecurityType) => {
-                            res.send(updatedSecurityType);
-                        });
-                }
+            .then((securityTypes) => {
+                res.send(securityTypes);
             });
     }
 
     @del("/security_types/")
     public static deleteSecurityTypes(req, res): void {
         const id = req.query.id;
-        let ids: number[] = [];
 
-        if (req.query.id) {
-            ids = typeof id === "string" ? ids.concat(parseInt(id, 10)) : ids.concat(ids);
-        } else {
-            res.send({ message: "No id specified" });
-        }
-
-        SecurityTypeController.securityTypeService.delete(ids)
+        SecurityTypeController.securityTypeService.delete(id)
             .then((data) => {
                 res.send(data);
             });

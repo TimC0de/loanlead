@@ -9,14 +9,7 @@ class UserService extends DBService<User> {
     }
 
     public test() {
-        return UserService.knex(this.tableName)
-            .column(["*", {users_id: "users.id"}, {phone_numbers_id: "phone_numbers.id"}])
-            .crossJoin("phone_numbers", "users.phone_numbers_id", "phone_numbers.id")
-            .map((row) => {
-                console.log(row);
-
-                return row;
-            });
+        this.find();
     }
 
     public triggerStatus(user: User) {
@@ -41,6 +34,12 @@ class UserService extends DBService<User> {
                 "l.actioned_by": "u.employee_id",
             })
             .map((row) => DBModel.valueOfRow<User>(row, User));
+    }
+
+    public findUserByEmployeeId(employeeId: string) {
+        return this.find({
+            "users.employee_id": employeeId,
+        });
     }
 }
 
