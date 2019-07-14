@@ -41,8 +41,4 @@ export class AppComponent implements OnInit {
             }
         }
     }
-
-    headerEffects() {
-
-    }
 }
