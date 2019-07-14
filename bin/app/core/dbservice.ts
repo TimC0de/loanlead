@@ -24,9 +24,47 @@ class DBService<T extends DBModel> {
         this._knex = _knex;
     }
 
+    protected findCount(
+        optionsObject?: { [key: string]: any },
+    ) {
+        let query = DBService.knex(this.tableName);
+
+        if (optionsObject) {
+            Object.keys(optionsObject).forEach((key) => {
+                const baseFunctionName: string = optionsObject[key].logicalFunction
+                    ? "orWhere"
+                    : "where";
+
+                if (optionsObject[key].range) {
+                    const functionName: string =
+                        baseFunctionName + capitaliseString(optionsObject[key].rangeFunction);
+
+                    query = query[functionName](
+                        key,
+                        optionsObject[key].range,
+                    );
+                } else {
+                    query = query[baseFunctionName](
+                        key,
+                        optionsObject[key].conditionOperator
+                            ? optionsObject[key].conditionOperator
+                            : "=",
+                        typeof optionsObject[key] === "object"
+                            ? optionsObject[key].conditionValue
+                            : optionsObject[key],
+                    );
+                }
+            });
+        }
+
+        return query.count();
+    }
+
     protected find(
         optionsObject?: { [key: string]: any },
         orderByColumn?: string,
+        page?: number,
+        limit?: number,
     ) {
         let query: QueryBuilder = DBService.knex(this.tableName);
         let relations: Array<{ [key: string]: any }> = [];
@@ -173,6 +211,14 @@ class DBService<T extends DBModel> {
                 ? orderByColumn
                 : `${this.tableName}.id`,
             );
+
+        if (limit) {
+            query = query.limit(limit);
+
+            if (page) {
+                query = query.offset((page - 1) * limit);
+            }
+        }
 
         // process result
         return query

@@ -9,7 +9,7 @@ import BranchService from "../services/branch_service";
 
 class BranchController extends Controller {
     private static branchService: BranchService = new BranchService();
-    public static mappings: Array<{method: string, path: string, callback: (req, res) => any}> = [];
+    public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
 
     @get("/branches/")
     public static index(req, res): void {

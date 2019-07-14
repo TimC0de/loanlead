@@ -14,12 +14,12 @@ class User extends DBModel {
     private _employeeId?: string;
 
     @oneToMany(Role, "name", "role")
-    @column("role_id")
-    private _roleId?: string;
+    @column("role_name")
+    private _roleName?: string;
 
-    @oneToMany(Branch, "id", "branch")
-    @column("branch_id")
-    private _branchId?: number;
+    @oneToMany(Branch, "name", "branch")
+    @column("branch_name")
+    private _branchName?: number;
 
     @oneToOne(PhoneNumber, "id", "phoneNumber")
     @column("phone_numbers_id")
@@ -44,13 +44,16 @@ class User extends DBModel {
     private _receiveSms?: boolean;
 
     @column("updated_at")
-    private _updatedAt?: string;
+    private _updatedAt?: Date;
 
     @column("status_change_timestamp")
-    private _statusChangeTimestamp?: string;
+    private _statusChangeTimestamp?: Date;
 
     @column("created_at")
-    private _createdAt?: string;
+    private _createdAt?: Date;
+
+    @column("newly_created")
+    private _newlyCreated: boolean;
 
     private _phoneNumber?: PhoneNumber;
     private _role?: Role;
@@ -74,8 +77,8 @@ class User extends DBModel {
 
         this.id = model.id;
         this.employeeId = model.employeeId;
-        this.roleId = model.roleId;
-        this.branchId = model.branchId;
+        this.roleName = model.roleName;
+        this.branchName = model.branchName;
         this.phoneNumbersId = model.phoneNumbersId;
         this.password = model.password;
         this.fullName = model.fullName;
@@ -108,20 +111,20 @@ class User extends DBModel {
         this._employeeId = value;
     }
 
-    get roleId(): string {
-        return this._roleId;
+    get roleName(): string {
+        return this._roleName;
     }
 
-    set roleId(value: string) {
-        this._roleId = value;
+    set roleName(value: string) {
+        this._roleName = value;
     }
 
-    get branchId(): number {
-        return this._branchId;
+    get branchName(): number {
+        return this._branchName;
     }
 
-    set branchId(value: number) {
-        this._branchId = value;
+    set branchName(value: number) {
+        this._branchName = value;
     }
 
     get phoneNumbersId(): number {
@@ -180,28 +183,36 @@ class User extends DBModel {
         this._receiveSms = value;
     }
 
-    get updatedAt(): string {
+    get updatedAt(): Date {
         return this._updatedAt;
     }
 
-    set updatedAt(value: string) {
+    set updatedAt(value: Date) {
         this._updatedAt = value;
     }
 
-    get statusChangeTimestamp(): string {
+    get statusChangeTimestamp(): Date {
         return this._statusChangeTimestamp;
     }
 
-    set statusChangeTimestamp(value: string) {
+    set statusChangeTimestamp(value: Date) {
         this._statusChangeTimestamp = value;
     }
 
-    get createdAt(): string {
+    get createdAt(): Date {
         return this._createdAt;
     }
 
-    set createdAt(value: string) {
-        this._createdAt = value;
+    set createdAt(value: Date) {
+        this._createdAt = value ? value : new Date();
+    }
+
+    get newlyCreated(): boolean {
+        return this._newlyCreated;
+    }
+
+    set newlyCreated(value: boolean) {
+        this._newlyCreated = value;
     }
 
     get phoneNumber(): PhoneNumber {

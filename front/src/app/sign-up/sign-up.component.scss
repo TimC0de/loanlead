@@ -1,0 +1,269 @@
+@import "../../common/css/fonts";
+@import "../../common/css/colors";
+
+#sign-up-container {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    #step-links {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+
+        > * {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 10%;
+            height: 100%;
+
+            position: fixed;
+            top: 0;
+
+            font-family: $font-roboto;
+            font-size: 20px;
+            color: $l-blue;
+
+            &:first-child {
+                width: 13%;
+                left: 0;
+            }
+
+            &:last-child {
+                right: 0;
+            }
+
+            .button-area {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 40px;
+                width: 100%;
+
+                cursor: pointer;
+                opacity: .5;
+                transition: .5s;
+
+                svg {
+                    height: 100%;
+                    fill: $l-blue;
+                }
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    #main-block {
+        padding: 0;
+        z-index: 1;
+
+        header {
+            font-family: $font-roboto;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 30px;
+            letter-spacing: 0.07em;
+        }
+
+        .sections-container {
+            position: relative;
+            display: flex;
+            overflow: hidden;
+            height: 500px;
+
+            section {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                transition: .5s;
+                padding: 0 40px;
+
+                &:nth-child(2) {
+                    left: 150%;
+                }
+
+                &:last-child {
+                    left: 300%;
+                }
+
+                form {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-around;
+
+                    .heading {
+                        position: relative;
+
+                        font-family: $font-roboto;
+                        font-weight: 600;
+                        font-size: 25px;
+                        letter-spacing: 0.07em;
+                        margin: 30px 0 25px;
+
+                        &:first-child {
+                            margin-top: 0;
+                        }
+
+                        &:after {
+                            position: absolute;
+                            bottom: -5px;
+                            left: 0;
+
+                            display: block;
+                            content: '';
+                            width: 100%;
+                            height: 1.5px;
+                            background-color: #ddd;
+
+                            border-radius: 3px;
+                        }
+                    }
+
+                    .picture-input-container {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 100%;
+                        height: 350px;
+
+                        label {
+                            position: relative;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            width: 270px;
+                            height: 270px;
+                            border-radius: 50%;
+                            border: 3px solid #999;
+                            overflow: hidden;
+                            cursor: pointer;
+
+                            &:before {
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                content: 'Choose the picture';
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 100%;
+                                border-radius: 50%;
+                                background-color: #777;
+                                color: #ccc;
+                                opacity: 0;
+
+                                font-family: $font-roboto;
+                                font-style: normal;
+                                font-weight: normal;
+                                font-size: 18px;
+                                letter-spacing: 0.05em;
+                                z-index: 1;
+
+                                transition: .4s;
+                            }
+
+                            &:hover:before {
+                                opacity: .5;
+                            }
+
+                            img {
+                                height: 250px;
+                                border-radius: 50%;
+                            }
+                        }
+                    }
+
+                    .button-container {
+                        display: flex;
+                        justify-content: center;
+
+                        button {
+                            border: 0;
+                            border-radius: 30px;
+
+                            font-family: $font-roboto;
+                            font-style: normal;
+                            font-weight: normal;
+                            font-size: 17px;
+                            letter-spacing: 0.05em;
+
+                            padding: 15px 30px;
+
+                            transition: .3s;
+                            box-shadow: 0 0 0 #aaa;
+
+                            background-color: $l-blue;
+                            opacity: 1;
+                            color: white;
+
+                            &.disabled {
+                                opacity: .3;
+                            }
+
+                            &:hover {
+                                box-shadow: 0 0 10px #aaa;
+                            }
+
+                            &:focus {
+                                outline: none;
+                            }
+
+                            @media screen and (max-width: 767.999999px) {
+                                margin: 10px 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 40px;
+            height: 50px;
+
+            .step-container {
+                display: flex;
+                width: 50px;
+                justify-content: space-between;
+
+                .step {
+                    height: 10px;
+                    width: 10px;
+                    border-radius: 50%;
+                    background-color: #999;
+
+                    transition: .5s;
+
+                    &.passed {
+                        background-color: $l-info-green;
+                    }
+
+                    &.current {
+                        background-color: #ddd;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.popover {
+    p {
+        width: 100%;
+    }
+}

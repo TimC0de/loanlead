@@ -7,9 +7,9 @@ class Branch extends DBModel {
     @column("id")
     private _id?: number;
 
-    @oneToMany(Entity, "id", "entity")
-    @column("entity_id")
-    private _entityId?: number;
+    @oneToMany(Entity, "name", "entity")
+    @column("entity_name")
+    private _entityName?: string;
 
     @column("name")
     private _name?: string;
@@ -45,7 +45,7 @@ class Branch extends DBModel {
         super();
 
         this.id = model.id;
-        this.entityId = model.entityId;
+        this.entityName = model.entityName;
         this.name = model.name;
         this.type = model.type;
         this.district = model.district;
@@ -65,12 +65,12 @@ class Branch extends DBModel {
         this._id = value;
     }
 
-    get entityId(): number {
-        return this._entityId;
+    get entityName(): string {
+        return this._entityName;
     }
 
-    set entityId(value: number) {
-        this._entityId = value;
+    set entityName(value: string) {
+        this._entityName = value;
     }
 
     get name(): string {

@@ -4,6 +4,7 @@ export default function post(path: string) {
             method: "post",
             path,
             callback: descriptor.value,
+            multipart: false,
         });
 
         return descriptor;

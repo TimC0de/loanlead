@@ -13,7 +13,7 @@ import { BankModule } from './bank/bank.module';
     declarations: [
         AppComponent,
         LoginComponent,
-        SignUpComponent
+        SignUpComponent,
     ],
     imports: [
         BrowserModule,

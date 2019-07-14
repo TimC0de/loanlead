@@ -6,7 +6,7 @@ import post from "./decorators/post";
 import put from "./decorators/put";
 
 class Controller {
-    public mappings: Array<{method: string, path: string, callback: (req, res) => any}> = [];
+    public mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
 
     // public mappings: Array<{method: string, path: string, callback: (req, res) => any}>;
     // protected service: T;

@@ -4,6 +4,7 @@ import Controller from "../../../core/controller";
 import DBModel from "../../../core/dbmodel";
 import del from "../../../core/decorators/delete";
 import get from "../../../core/decorators/get";
+import multipartRequest from "../../../core/decorators/multipartRequest";
 import post from "../../../core/decorators/post";
 import put from "../../../core/decorators/put";
 import PhoneNumber from "../../phone_numbers/models/phone_number";
@@ -14,7 +15,31 @@ import UserService from "../services/user_service";
 class UserController extends Controller {
     private static userService: UserService = new UserService();
     private static phoneService: PhoneNumberService = new PhoneNumberService();
-    public static mappings: Array<{method: string, path: string, callback: (req, res) => any}> = [];
+    public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
+
+    @get("/users/:type/count")
+    public static findTypeCount(req, res) {
+        const type: string = req.params.type;
+
+        UserController.userService.findTypeCount(type)
+            .then((data: number) => {
+                res.send({
+                    count: data,
+                });
+            });
+    }
+
+    @get("/users/:type")
+    public static findType(req, res) {
+        const type: string = req.params.type;
+        const page: number = req.query.page;
+        const limit: number = req.query.limit;
+
+        UserController.userService.findType(type, page, limit)
+            .then((data) => {
+                res.send(data);
+            });
+    }
 
     @get("/users/")
     public static index(req, res) {
@@ -34,13 +59,33 @@ class UserController extends Controller {
             });
     }
 
+    @multipartRequest()
     @post("/users/")
     public static addUser(req, res) {
-        const user: User = DBModel.valueOfRequest<User>(req.query, User);
+        const requestObject: { [key: string]: any } = Object.create(null);
 
-        UserController.userService.add(user)
-            .then((users) => {
-                res.send(users);
+        Object.keys(req.body).forEach((key) => {
+            requestObject[key.slice(1)] = req.body[key];
+        });
+
+        const user: User = new User(requestObject);
+
+        if (req.files.length) {
+            user.picturePath = `assets/images/${req.files[0].filename}`;
+        }
+
+        bcrypt.genSalt(config.saltRounds).then((salt) => {
+                bcrypt.hash(user.password, salt).then((hash) => {
+                        user.password = hash;
+
+                        UserController.userService.add(user)
+                            .then((insertedUsers) => {
+                                res.send(insertedUsers);
+                            })
+                            .catch((reason) => {
+                                res.send(reason);
+                            });
+                    });
             });
     }
 
@@ -54,56 +99,29 @@ class UserController extends Controller {
                 if (users.length) {
                     const user: User = users.pop();
 
-                    bcrypt.compare(password, user.password)
-                        .then((match) => {
-                            if (match) {
-                                req.session.user = user;
-
-                                res.send(user);
-                            } else {
-                                res.send({
-                                    message: "Username or password are wrong",
-                                });
-                            }
+                    if (user.newlyCreated) {
+                        res.send({
+                            message: "Sorry, your account is not approved yet",
                         });
+                    } else {
+                        bcrypt.compare(password, user.password)
+                            .then((match) => {
+                                if (match) {
+                                    req.session.user = user;
+
+                                    res.send(user);
+                                } else {
+                                    res.send({
+                                        message: "Please, provide the right username and password",
+                                    });
+                                }
+                            });
+                    }
                 } else {
                     res.send({
-                        message: "Username or password are wrong",
+                        message: "Please, provide the right username and password",
                     });
                 }
-            });
-    }
-
-    @post("/users/register")
-    public static registerNewUser(req, res) {
-        const user: User =
-            DBModel.valueOfRequest<User>(req.query, User);
-
-        user.phoneNumber =
-            DBModel.valueOfRequest<PhoneNumber>(req.query, PhoneNumber);
-
-        if (UserController.phoneService.isUnique("firstPhoneNumber", user.phoneNumber.firstPhoneNumber)) {
-            res.send("firstPhoneNumber: not unique");
-        }
-
-        if (UserController.phoneService.isUnique("secondPhoneNumber", user.phoneNumber.secondPhoneNumber)) {
-            res.send("secondPhoneNumber: not unique");
-        }
-
-        bcrypt.genSalt(config.saltRounds)
-            .then((salt) => {
-                bcrypt.hash(user.password, salt)
-                    .then((hash) => {
-                        UserController.userService.add(user)
-                            .then((insertedUsersId) => {
-                                if (insertedUsersId) {
-                                    res.send("OK");
-                                }
-                            })
-                            .catch((reason) => {
-                                res.send("Failed");
-                            });
-                    });
             });
     }
 
@@ -130,6 +148,19 @@ class UserController extends Controller {
         UserController.userService.delete(id)
             .then((data) => {
                 res.send(data);
+            });
+    }
+
+    @get("/users/unique/:field")
+    public static checkIfFieldIsUnique(req, res) {
+        const type: string = req.params.field;
+        const value = req.query.value;
+
+        UserController.userService.fieldIsUnique(type, value)
+            .then((isUnique) => {
+                res.send({
+                    isUnique,
+                });
             });
     }
 }

@@ -4,6 +4,7 @@ export default function put(path: string) {
             method: "put",
             path,
             callback: descriptor.value,
+            multipart: false,
         });
 
         return descriptor;

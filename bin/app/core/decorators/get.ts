@@ -4,6 +4,7 @@ export default function get(path: string) {
             method: "get",
             path,
             callback: descriptor.value,
+            multipart: false,
         });
 
         return descriptor;

@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
+import config from "../config";
 import DBModel from "./dbmodel";
 import DBService from "./dbservice";
-import config from "../config";
 
 const formatDate = (d: Date): string => {
     const month = d.getMonth() + 1 > 9

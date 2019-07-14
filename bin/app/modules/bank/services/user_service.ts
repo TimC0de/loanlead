@@ -8,8 +8,12 @@ class UserService extends DBService<User> {
         super(User, User.getTableName());
     }
 
-    public test() {
-        this.find();
+    public fieldIsUnique(field: string, value) {
+        return UserService.knex(this.tableName)
+            .where(field, value)
+            .then((data) => {
+                return !(data && data.length);
+            });
     }
 
     public triggerStatus(user: User) {
@@ -40,6 +44,56 @@ class UserService extends DBService<User> {
         return this.find({
             "users.employee_id": employeeId,
         });
+    }
+
+    public findTypeCount(type: string) {
+        let result: Promise<any> = Object.create(null);
+
+        switch (type) {
+            case "registered":
+                result = this.findCount({
+                    "users.newly_created": 1,
+                });
+
+                break;
+            case "online":
+                result = this.findCount({
+                    "users.status": "online",
+                });
+
+                break;
+            default:
+                result = this.findCount();
+
+                break;
+        }
+
+        return result;
+    }
+
+    public findType(type: string, page: number, limit: number) {
+        let result: Promise<any> = Object.create(null);
+
+        switch (type) {
+            case "registered":
+                result = this.find({
+                    "users.newly_created": 1,
+                }, null, page, limit);
+
+                break;
+            case "online":
+                result = this.find({
+                    "users.status": "online",
+                }, null, page, limit);
+
+                break;
+            default:
+                result = this.find();
+
+                break;
+        }
+
+        return result;
     }
 }
 

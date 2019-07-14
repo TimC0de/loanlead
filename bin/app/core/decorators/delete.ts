@@ -4,6 +4,7 @@ export default function del(path: string) {
             method: "delete",
             path,
             callback: descriptor.value,
+            multipart: false,
         });
 
         return descriptor;

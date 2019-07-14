@@ -5,6 +5,7 @@ import express from "express";
 import session from "express-session";
 import Knex from "knex";
 import logger from "morgan";
+import multer from "multer";
 import mysql from "mysql";
 import config from "./config";
 import DBService from "./core/dbservice";
@@ -38,12 +39,39 @@ if (false) {
 }
 
 // creating server object
+const storage = multer.diskStorage({
+    destination(req, file, cb) {
+        cb(null, "front/src/assets/images");
+    },
+    filename(req, file, cb) {
+        cb(
+            null,
+            `${
+                file.fieldname.slice(1).replace(
+                    /[A-Z]/, 
+                    (c: string) => `_${c.toLowerCase()}`,
+                )
+            }-${Date.now()}.${
+                file.originalname
+                    .substring(
+                        file.originalname.lastIndexOf(".") + 1,
+                    )
+            }`,
+        );
+    },
+});
+
 const app = express();
 const router = express.Router();
+const upload = multer({ storage });
 
 // register mappings
 mappings.forEach((mapping) => {
-    router[mapping.method](mapping.path, mapping.callback);
+    if (!mapping.multipart) {
+        router[mapping.method](mapping.path, mapping.callback);
+    } else {
+        router[mapping.method](mapping.path, upload.any(), mapping.callback);
+    }
 });
 
 // setting all middlewares

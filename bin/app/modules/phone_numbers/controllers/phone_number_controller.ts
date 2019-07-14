@@ -1,37 +1,40 @@
 import Controller from "../../../core/controller";
 import DBModel from "../../../core/dbmodel";
 import get from "../../../core/decorators/get";
+import post from "../../../core/decorators/post";
 import put from "../../../core/decorators/put";
 import PhoneNumber from "../models/phone_number";
 import PhoneNumberService from "../services/phone_number_service";
 
 class PhoneNumberController extends Controller {
-    public static mappings: Array<{method: string, path: string, callback: (req, res) => any}> = [];
+    public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
     private static phoneNumberService: PhoneNumberService = new PhoneNumberService();
     
-    @get("/phone_numbers/:id")
-    public static findById(req, res) {
-        const id: number = req.params.id;
-        
-        PhoneNumberController.phoneNumberService.findById(id)
-            .then((phoneNumber) => {
-                res.send(phoneNumber);
+    @get("/phone_numbers/")
+    public static checkIfUnique(req, res) {
+        const phoneNumber: string = req.query.phoneNumber;
+
+        PhoneNumberController.phoneNumberService.isUnique(phoneNumber)
+            .then((isUnique: boolean) => {
+                res.send({
+                    isUnique,
+                });
             });
     }
     
-    @put("/phone_numbers/:id")
-    public static updatePhoneNumber(req, res) {
-        const id: number = req.params.id;
-        const phoneNumber: PhoneNumber = DBModel.valueOfRequest<PhoneNumber>(req.query, PhoneNumber);
+    @post("/phone_numbers/")
+    public static addPhoneNumber(req, res) {
+        const requestObject: { [key: string]: any } = Object.create(null);
+
+        Object.keys(req.body).forEach((key) => {
+            requestObject[key.slice(1)] = req.body[key];
+        });
+
+        const phoneNumber: PhoneNumber = DBModel.valueOfRequest(requestObject, PhoneNumber);
         
-        PhoneNumberController.phoneNumberService.update(phoneNumber, id)
-            .then((updatedRowId) => {
-                if (updatedRowId) {
-                    PhoneNumberController.phoneNumberService.findById(id)
-                        .then((updatedPhoneNumber) => {
-                            res.send(updatedPhoneNumber);
-                        });
-                }
+        PhoneNumberController.phoneNumberService.add(phoneNumber)
+            .then((data) => {
+                res.send(data);
             });
     }
 }

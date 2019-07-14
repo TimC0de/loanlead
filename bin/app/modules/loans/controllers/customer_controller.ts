@@ -8,7 +8,7 @@ import Customer from "../models/customer";
 import CustomerService from "../services/customer_service";
 
 class CustomerController extends Controller {
-    public static mappings: Array<{method: string, path: string, callback: (req, res) => any}> = [];
+    public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
     private static customerService: CustomerService = new CustomerService();
 
     @get("/customers/")

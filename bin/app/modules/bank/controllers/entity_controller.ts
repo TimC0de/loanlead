@@ -9,7 +9,7 @@ import EntityService from "../services/entity_service";
 
 class EntityController extends Controller {
     private static entityService: EntityService = new EntityService();
-    public static mappings: Array<{method: string, path: string, callback: (req, res) => any}> = [];
+    public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
 
     @get("/entities/")
     public static index(req, res): void {

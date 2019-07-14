@@ -1,0 +1,20 @@
+<header>
+    Dashboard
+</header>
+<hr>
+<div class="dashboard-content">
+    <div class="list-headings">
+        <div class="list-heading active" (click)="move('previous')">
+            <span>Registered</span>
+            <div class="list-heading-active"></div>
+        </div>
+        <div class="list-heading" (click)="move('next')">
+            <span>Online</span>
+            <div class="list-heading-active"></div>
+        </div>
+    </div>
+    <div class="lists">
+        <app-users-list [type]="'registered'" [count]="5"></app-users-list>
+        <app-users-list [type]="'online'" [count]="5"></app-users-list>
+    </div>
+</div>

@@ -5,7 +5,7 @@
         </header>
         <hr>
         <section>
-            <form [formGroup]="loginForm">
+            <form [formGroup]="form">
                 <div class="text-input-control">
                     <label for="employeeId">
                         Employee Id
@@ -35,15 +35,15 @@
         <hr>
         <footer class="flex-md-row flex-column">
             <button class="col-md-5 col-12"
-                    [class.disabled]="!loginForm.valid"
+                    [class.disabled]="!form.valid"
                     (click)="submit()">SIGN IN
             </button>
-            <button class="col-md-5 col-12">SIGN UP</button>
+            <button class="col-md-5 col-12" routerLink="/sign-up">SIGN UP
+            </button>
         </footer>
     </div>
 </div>
 
 <div class="info-div error">
     <div class="material-icons">error_outline</div>
-    Please, provide the right username and password
 </div>

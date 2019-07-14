@@ -1,2 +1,45 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<router-outlet></router-outlet>
+<div class="content-container">
+    <header *ngIf="currentUser"
+            (hover)="headerEffects()">
+        <div class="profileLink">
+            <div class="img-container">
+                <img [src]="currentUser._picturePath" alt="">
+            </div>
+            <div class="text-content">
+                {{ currentUser._fullName }}
+            </div>
+        </div>
+        <div class="dashboardLink" routerLink="/admin/home" routerLinkActive="active">
+            <div class="material-icons">
+                dashboard
+            </div>
+            <div class="text-content">
+                Dashboard
+            </div>
+        </div>
+        <div class="bankStructuresLink">
+            <div class="material-icons">
+                account_balance
+            </div>
+            <div class="text-content">
+                Bank Entities
+            </div>
+        </div>
+        <div class="reportsLink" routerLink="/admin/reports" routerLinkActive="active">
+            <div class="material-icons">
+                report
+            </div>
+            <div class="text-content">Reports</div>
+        </div>
+        <div class="logOutLink" routerLink="/admin/logout">
+            <div class="material-icons">
+                exit_to_app
+            </div>
+            <div class="text-content">Log out</div>
+        </div>
+    </header>
+    <div class="content">
+        <router-outlet></router-outlet>
+    </div>
+</div>

@@ -1,1 +1,237 @@
-<p>sign-up works!</p>
+<div id="sign-up-container">
+    <div id="step-links"
+         class="d-md-block d-none">
+        <div class="previous">
+            <div class="button-area"
+                 (click)="previous()">
+                <svg x="0px" y="0px" viewBox="0 0 86.001 86.001" style="enable-background:new 0 0 86.001 86.001;" xml:space="preserve">
+                    <g>
+                        <path d="M64.998,80.095c1.338,1.352,1.338,3.541,0,4.893c-1.336,1.35-3.506,1.352-4.844,0l-39.151-39.54
+                            c-1.338-1.352-1.338-3.543,0-4.895l39.15-39.539c1.338-1.352,3.506-1.352,4.844,0C66.335,2.366,66.335,4.556,65,5.907
+                            L29.294,43.001L64.998,80.095z"/>
+                    </g>
+                </svg>
+                Previous
+            </div>
+        </div>
+        <div class="next">
+            <div class="button-area"
+                 (click)="next()">
+                Next
+                <svg x="0px" y="0px" viewBox="0 0 86 86" style="enable-background:new 0 0 86 86;" xml:space="preserve">
+                    <g>
+                        <path d="M21.003,80.094c-1.338,1.352-1.338,3.541,0,4.893c1.337,1.35,3.506,1.352,4.845,0l39.149-39.539
+                            c1.338-1.352,1.338-3.543,0-4.895L25.848,1.014c-1.339-1.352-3.506-1.352-4.845,0c-1.338,1.352-1.338,3.541-0.001,4.893L56.706,43
+                            L21.003,80.094z"/>
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </div>
+    <div id="main-block" class="col-xl-7 col-lg-8 col-md-9 col-sm-10">
+        <div class="sections-container">
+            <section>
+                <form id="mainInformationForm" [formGroup]="mainInformationForm" (ngSubmit)="next()">
+                    <div class="heading">
+                        Main Information
+                    </div>
+                    <div class="text-input-group">
+                        <div class="text-input-control">
+                            <label for="employeeId">
+                                Employee Id
+                                <span class="feedback"></span>
+                            </label>
+                            <input id="employeeId"
+                                   type="text"
+                                   placeholder="Employee Id"
+                                   data-placeholder="Employee Id"
+                                   formControlName="employeeId"
+                                   (input)="validate()"
+                                   (blur)="isUnique('employeeId')"
+                                   required
+                                   autocomplete="off">
+                        </div>
+                        <div class="text-input-control">
+                            <label for="password">
+                                Password
+                                <span class="feedback"></span>
+                            </label>
+                            <input id="password"
+                                   type="password"
+                                   placeholder="Password"
+                                   data-placeholder="Password"
+                                   formControlName="password"
+                                   (input)="validate()"
+                                   required
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="text-input-group">
+                        <div class="text-input-control">
+                            <label for="fullName">
+                                Full Name
+                                <span class="feedback"></span>
+                            </label>
+                            <input id="fullName"
+                                   type="text"
+                                   placeholder="Full Name"
+                                   data-placeholder="Full Name"
+                                   formControlName="fullName"
+                                   (input)="validate()"
+                                   required>
+                        </div>
+                        <div class="text-input-control">
+                            <label for="email">
+                                Email
+                                <span class="feedback"></span>
+                            </label>
+                            <input id="email"
+                                   type="text"
+                                   placeholder="Email"
+                                   data-placeholder="Email"
+                                   formControlName="email"
+                                   (input)="validate()"
+                                   (blur)="isUnique('email')"
+                                   required
+                                   email>
+                        </div>
+                    </div>
+                    <div class="heading">
+                        Phone Numbers
+                    </div>
+                    <div class="text-input-group"
+                         [formGroup]="phoneNumbersForm">
+                        <div class="text-input-control">
+                            <label for="firstPhoneNumber">
+                                First Phone
+                                <span class="feedback"></span>
+                            </label>
+                            <input id="firstPhoneNumber"
+                                   type="text"
+                                   placeholder="First Phone"
+                                   data-placeholder="First Phone"
+                                   formControlName="firstPhoneNumber"
+                                   (input)="validatePhoneNumbers()"
+                                   (blur)="isUniquePhoneNumber('firstPhoneNumber')"
+                                   required
+                                   minlength="9"
+                                   maxlength="10">
+                        </div>
+                        <div class="text-input-control">
+                            <label for="secondPhoneNumber">
+                                Second Phone
+                                <span class="feedback"></span>
+                            </label>
+                            <input id="secondPhoneNumber"
+                                   type="text"
+                                   placeholder="Second Phone"
+                                   data-placeholder="Second Phone"
+                                   formControlName="secondPhoneNumber"
+                                   (keydown)="prevent($event)"
+                                   (input)="validatePhoneNumbers()"
+                                   (blur)="isUniquePhoneNumber('secondPhoneNumber')"
+                                   required
+                                   minlength="9"
+                                   maxlength="10"
+                                   data-last>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <section>
+                <form id="jobDetailsForm" [formGroup]="jobDetailsForm" (ngSubmit)="next()">
+                    <div class="heading">
+                        Job Information
+                    </div>
+                    <div class="text-select-group" style="height: 500px">
+                        <div class="text-select-control">
+                            <label for="branch">
+                                Where are you working?
+                                <span class="feedback"></span>
+                            </label>
+                            <input id="branch"
+                                   class="main-input"
+                                   type="text"
+                                   placeholder="Enter your working place"
+                                   data-placeholder="Enter your working place"
+                                   formControlName="branch"
+                                   (keyup)="autocompleteInputField($event)"
+                                   (blur)="completeField($event)"
+                                   required
+                                   autocomplete="off">
+                            <input
+                                type="text"
+                                class="autocomplete-input"
+                                autocomplete="off"
+                                disabled/>
+                        </div>
+                        <div class="text-select-control">
+                            <label for="role">
+                                What is your role?
+                                <span class="feedback"></span>
+                            </label>
+                            <input id="role"
+                                   class="main-input"
+                                   type="text"
+                                   placeholder="Enter your role"
+                                   data-placeholder="Enter your role"
+                                   formControlName="role"
+                                   (keyup)="autocompleteInputField($event)"
+                                   (blur)="completeField($event)"
+                                   required
+                                   data-last
+                                   autocomplete="off">
+                            <input
+                                type="text"
+                                class="autocomplete-input"
+                                autocomplete="off"
+                                disabled/>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <section>
+                <form [formGroup]="userPictureForm">
+                    <div class="heading">
+                        User Picture
+                    </div>
+                    <div class="picture-input-container">
+                        <label for="userPicture">
+                            <img id="selectedPicture" src="assets/images/default_picture.png" alt="User Picture">
+                        </label>
+                        <input id="userPicture"
+                               type="file"
+                               hidden
+                               formControlName="userPicture"
+                               (change)="handlePictureInput($event)">
+                    </div>
+                    <div class="button-container">
+                        <button class="col-md-3 col-12"
+                                (click)="submit()">SIGN IN
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </div>
+        <footer>
+            <div class="step-container">
+                <div class="step current"></div>
+                <div class="step"></div>
+                <div class="step"></div>
+            </div>
+            <a routerLink="/login">
+                Do you already have an account?
+            </a>
+        </footer>
+    </div>
+</div>
+
+<div class="info-div error">
+    <div class="material-icons">error_outline</div>
+    Please, provide the right data to create a new account
+</div>
+
+<div class="info-div success">
+    <div class="material-icons">done</div>
+    You have registered successfully
+</div>

@@ -7,7 +7,7 @@ import Role from "../models/role";
 import RoleService from "../services/role_service";
 
 class RoleController extends Controller {
-    public static mappings: Array<{method: string, path: string, callback: (req, res) => any}> = [];
+    public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
     private static roleService: RoleService = new RoleService();
     
     @get("/roles/")

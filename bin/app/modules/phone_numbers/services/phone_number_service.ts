@@ -12,17 +12,12 @@ class PhoneNumberService extends DBService<PhoneNumber> {
         super(PhoneNumber, PhoneNumber.getTableName());
     }
 
-    public isUnique(
-        phoneNumberType: string,
-        phoneNumber: string,
-    ) {
+    public isUnique(value: string) {
         return PhoneNumberService.knex("phone_numbers")
-            .where(
-                toSnakeCase(phoneNumberType),
-                phoneNumber,
-            )
+            .where("first_phone_number", value)
+            .orWhere("second_phone_number", value)
             .then((data) => {
-                return !data;
+                return !(data && data.length);
             });
     }
 }

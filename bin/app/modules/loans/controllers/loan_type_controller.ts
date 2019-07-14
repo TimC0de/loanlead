@@ -8,7 +8,7 @@ import LoanTypeService from "../services/loan_type_service";
 
 class LoanTypeController {
     private static loanTypeService: LoanTypeService = new LoanTypeService();
-    public static mappings: Array<{method: string, path: string, callback: (req, res) => any}> = [];
+    public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
 
     @get("/loan_types/")
     public static index(req, res): void {

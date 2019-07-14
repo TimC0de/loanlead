@@ -1,0 +1,76 @@
+<div class="filter-block">
+    <div class="text-input-control col-xl-3 col-md-4 col-sm-5 col-12 p-0">
+        <label for="search">
+            Search
+        </label>
+        <input id="search"
+               type="text"
+               placeholder="Search"
+               data-placeholder="Search"
+               [formControl]="searchValue"
+               required>
+    </div>
+    <div class="text-input-control col-xl-3 col-md-4 col-sm-5 col-12 p-0 ml-md-3">
+        <label for="itemsCount">
+            Show Items
+            <span class="feedback"></span>
+        </label>
+        <input id="itemsCount"
+               type="text"
+               placeholder="Search"
+               data-placeholder="Search"
+               [formControl]="itemsCount"
+               (input)="validate()"
+               (blur)="filter()"
+               required>
+    </div>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Full Name</th>
+            <th class="important">Employee Id</th>
+            <th>Email</th>
+            <th class="important">Phone Number</th>
+            <th>Role</th>
+            <th class="important">Branch</th>
+            <th class="important">Entity</th>
+            <th *ngIf="type">Action</th>
+            <th *ngIf="!type">Created At</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let user of users">
+            <td>{{ user._id }}</td>
+            <td>{{ user._fullName }}</td>
+            <td>{{ user._employeeId}}</td>
+            <td>{{ user._email }}</td>
+            <td>{{ user._phoneNumber._firstPhoneNumber }}</td>
+            <td>{{ user._role._displayName }}</td>
+            <td>{{ user._branchName }}</td>
+            <td>{{ user._branch._entityName }}</td>
+            <td *ngIf="type === 'registered'"
+                class="action"
+                (click)="action()">
+                <a href="javascript:void(0);">
+                    Approve
+                </a>
+            </td>
+            <td *ngIf="type === 'online'"
+                class="action"
+                (click)="action()">
+                <a href="javascript:void(0);">
+                    Log out
+                </a>
+            </td>
+            <td *ngIf="!type">
+                {{ formatDate(user._createdAt) }}
+            </td>
+            <td>
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </td>
+        </tr>
+    </tbody>
+</table>

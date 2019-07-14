@@ -2,7 +2,7 @@ import get from "../../../core/decorators/get";
 import ReportService from "../services/report_service";
 
 class ReportController {
-    public static mappings: Array<{method: string, path: string, callback: (req, res) => any}> = [];
+    public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
     private static reportService: ReportService = new ReportService();
 
     @get("/reports/:loanId")

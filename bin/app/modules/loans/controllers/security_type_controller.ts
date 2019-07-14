@@ -8,7 +8,7 @@ import SecurityTypeService from "../services/security_type_service";
 
 class SecurityTypeController {
     private static securityTypeService: SecurityTypeService = new SecurityTypeService();
-    public static mappings: Array<{method: string, path: string, callback: (req, res) => any}> = [];
+    public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
 
     @get("/security_types/")
     public static index(req, res): void {

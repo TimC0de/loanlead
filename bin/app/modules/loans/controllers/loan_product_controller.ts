@@ -8,7 +8,7 @@ import LoanProductService from "../services/loan_product_service";
 
 class LoanProductController {
     private static loanProductService: LoanProductService = new LoanProductService();
-    public static mappings: Array<{method: string, path: string, callback: (req, res) => any}> = [];
+    public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
 
     @get("/loan_products/")
     public static index(req, res): void {

@@ -3,6 +3,18 @@
 @import "common/css/colors";
 @import "common/css/fonts";
 
+.text-input-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 5px 0;
+
+    .text-input-control {
+        width: 45%;
+        margin: 0;
+    }
+}
+
 .text-input-control {
     height: 100px;
     width: 100%;
@@ -12,13 +24,14 @@
 
     display: flex;
     flex-direction: column;
+    margin: 5px 0;
 
     label {
         position: absolute;
         top: 0;
 
         width: 100%;
-        height: 30%;
+        height: 40%;
 
         cursor: pointer;
 
@@ -44,15 +57,15 @@
 
     input {
         position: absolute;
-        top: 30%;
+        top: 40%;
 
         width: 100%;
-        height: 55%;
+        height: 60%;
         border-radius: 25px;
         border: 1.5px solid rgba(120, 120, 120, 0.66);
 
         padding-left: 20px;
-        transition: .5s;
+        transition: .4s;
 
         &:focus {
             width: 100%;
@@ -63,7 +76,98 @@
             outline: none;
             border-width: 0;
 
-            box-shadow: 0 0 10px #AAAAAA;
+            box-shadow: 0 0 10px $l-blue;
+
+            padding-top: 10px;
+            padding-left: 30px;
+        }
+
+        &.invalid {
+            border-color: $l-input-red;
+
+            &:focus {
+                box-shadow: 0 0 10px $l-input-red;
+            }
+        }
+    }
+
+    .autocomplete-hint {
+        z-index: -1;
+    }
+}
+
+.text-select-control {
+    height: 100px;
+    width: 100%;
+
+    box-sizing: border-box;
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    margin: 5px 0;
+
+    label {
+        position: absolute;
+        top: 0;
+
+        width: 100%;
+        height: 40%;
+
+        cursor: pointer;
+
+        transition: .4s;
+
+        display: flex;
+        align-items: center;
+        z-index: 1;
+
+        span.feedback {
+            font-size: 14px;
+            position: relative;
+
+            display: inline-block;
+            margin-left: 10px;
+
+            color: $l-input-red;
+
+            opacity: 1;
+            transition: .3s;
+        }
+    }
+
+    input {
+        position: absolute;
+        top: 40%;
+
+        width: 100%;
+        height: 60%;
+        border-radius: 25px;
+        border: 1.5px solid rgba(120, 120, 120, 0.66);
+
+        padding-left: 20px;
+        transition: .4s;
+
+        &.main-input {
+            background-color: transparent;
+        }
+
+        &.autocomplete-input {
+            color: #aaa;
+            background-color: #fff;
+            z-index: -1;
+        }
+
+        &.focused {
+            width: 100%;
+            height: 100%;
+            top: 0;
+
+            border-radius: 50px;
+            outline: none;
+            border-width: 0;
+
+            box-shadow: 0 0 10px $l-blue;
 
             padding-top: 10px;
             padding-left: 30px;

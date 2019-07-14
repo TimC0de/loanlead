@@ -61,8 +61,12 @@
                     color: white;
 
                     &.disabled {
-                        background-color: #ccc;
+                        opacity: .3;
                     }
+                }
+
+                &:focus {
+                    outline: none;
                 }
 
                 &:last-child {
