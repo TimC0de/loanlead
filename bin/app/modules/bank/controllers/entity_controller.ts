@@ -31,7 +31,13 @@ class EntityController extends Controller {
 
     @post("/entities")
     public static addEntity(req, res): void {
-        const entity: Entity = DBModel.valueOfRequest<Entity>(req.query, Entity);
+        const requestBody: { [key: string]: any } = Object.create(null);
+
+        Object.keys(req.body).forEach((key) => {
+            requestBody[key.slice(1)] = req.body[key];
+        });
+
+        const entity: Entity = new Entity(requestBody);
 
         EntityController.entityService.add(entity)
             .then((entities) => {
@@ -41,7 +47,13 @@ class EntityController extends Controller {
 
     @put("/entities/:id")
     public static updateEntity(req, res): void {
-        const entity: Entity = DBModel.valueOfRequest<Entity>(req.query, Entity);
+        const requestBody: { [key: string]: any } = Object.create(null);
+
+        Object.keys(req.body).forEach((key) => {
+            requestBody[key.slice(1)] = req.body[key];
+        });
+
+        const entity: Entity = new Entity(requestBody);
         const id: number = req.params.id;
 
         EntityController.entityService.update(entity, id)
@@ -51,12 +63,27 @@ class EntityController extends Controller {
     }
 
     @del("/entities/")
-    public static deleteEntities(req, res): void {
+    public static deleteEntities(req, res) {
         const id = req.query.id;
 
         EntityController.entityService.delete(id)
             .then((data) => {
-                res.send(data);
+                res.send({
+                    deletedRowsNumber: data,
+                });
+            });
+    }
+
+    @get("/entities/unique/:type")
+    public static fieldIsUnique(req, res) {
+        const type = req.params.type;
+        const value = req.query.value;
+
+        EntityController.entityService.isUnique(type, value)
+            .then((data: boolean) => {
+                res.send({
+                    isUnique: data,
+                });
             });
     }
 }

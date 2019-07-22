@@ -8,7 +8,7 @@ export function textInputEventHandler(eventType) {
         target.style.fontSize = eventType === 'focus' ? '18px' : '16px';
 
         Object.assign(label.style, {
-            top: eventType === 'focus' ? '10px' : '0',
+            top: eventType === 'focus' ? '8px' : '0',
             left: eventType === 'focus' ? '30px' : '0',
             fontSize: eventType === 'focus' ? '14px' : '16px',
             color: eventType === 'focus' ? '#666666' : 'black'
@@ -38,7 +38,7 @@ export function textSelectEventHandler(eventType) {
         });
 
         Object.assign(label.style, {
-            top: eventType === 'focus' ? '10px' : '0',
+            top: eventType === 'focus' ? '8px' : '0',
             left: eventType === 'focus' ? '30px' : '0',
             fontSize: eventType === 'focus' ? '14px' : '16px',
             color: eventType === 'focus' ? '#666666' : 'black'

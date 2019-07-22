@@ -24,7 +24,7 @@ class Branch extends DBModel {
     private _town?: string;
 
     @column("created_at")
-    private _createdAt?: string;
+    private _createdAt?: Date;
 
     private _entity?: Entity;
 
@@ -105,12 +105,12 @@ class Branch extends DBModel {
         this._town = value;
     }
 
-    get createdAt(): string {
+    get createdAt(): Date {
         return this._createdAt;
     }
 
-    set createdAt(value: string) {
-        this._createdAt = value;
+    set createdAt(value: Date) {
+        this._createdAt = value ? value : new Date();
     }
 
     get entity(): Entity {

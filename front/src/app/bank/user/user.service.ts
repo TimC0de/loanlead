@@ -46,22 +46,34 @@ export class UserService extends BaseService {
     }
 
     public findTypeCount(type: string) {
-        const url = `${this.baseUrl}/users/${type}/count`;
+        const url = `${this.baseUrl}/users/count`;
+        const httpOptions = Object.assign({}, this.httpOptions);
+        httpOptions.params = new HttpParams()
+            .set('type', type);
 
         return this.http.get(
             url,
-            this.httpOptions,
+            httpOptions,
         ).pipe(map(
             (countObj: { count: number}) => countObj.count,
         ));
     }
 
-    public findType(type: string, page: number, limit: number) {
-        const url = `${this.baseUrl}/users/${type}`;
+    public findType(type: string, page?: number, limit?: number) {
+        const url = `${this.baseUrl}/users`;
         const httpOptions = Object.assign({}, this.httpOptions);
-        httpOptions.params = new HttpParams()
-            .set('page', page.toString(10))
-            .set('limit', limit.toString(10));
+        let httpParams = new HttpParams()
+            .set('type', type);
+
+        if (page) {
+            httpParams = httpParams.set('page', page.toString());
+        }
+
+        if (limit) {
+            httpParams = httpParams.set('limit', limit.toString());
+        }
+
+        httpOptions.params = httpParams;
 
         return this.http.get<User[]>(
             url,

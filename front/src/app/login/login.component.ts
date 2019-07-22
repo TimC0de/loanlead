@@ -106,8 +106,8 @@ export class LoginComponent implements OnInit {
         }
 
         this.userService.login(this.form.value)
-            .subscribe((data: User | { message: string }) => {
-                if (!(data instanceof User)) {
+            .subscribe((data) => {
+                if (!data._id) {
                     const errorInfoDiv = document.querySelector('.info-div.error');
 
                     errorInfoDiv.textContent = data.message;

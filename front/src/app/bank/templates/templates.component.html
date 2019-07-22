@@ -1,0 +1,102 @@
+<header>
+    Templates
+</header>
+<hr>
+<div class="filter-block">
+    <div class="filter-block-content col-xl-6 col-md-8 col-sm-10 col-24 p-0 ml-md-3">
+        <div class="text-input-control">
+            <label for="search">
+                Search
+            </label>
+            <input id="search"
+                   type="text"
+                   placeholder="Search"
+                   data-placeholder="Search"
+                   [formControl]="searchValue"
+                   required>
+        </div>
+        <div class="text-input-control">
+            <label for="itemsCount">
+                Show Items
+                <span class="feedback"></span>
+            </label>
+            <input id="itemsCount"
+                   type="text"
+                   placeholder="Search"
+                   data-placeholder="Search"
+                   [formControl]="itemsCount"
+                   (input)="validate()"
+                   (blur)="filter()"
+                   required>
+        </div>
+    </div>
+    <button routerLink="/admin/entities/form">Create Template</button>
+</div>
+<div class="table-container">
+    <table *ngIf="templates.length">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th class="important">Type</th>
+            <th class="important">Stage</th>
+            <th>Template</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let template of templates">
+            <td>{{ template._id }}</td>
+            <td>{{ template._type }}</td>
+            <td>{{ template._stage._displayName }}</td>
+            <td class="template-text">{{ template._template }}</td>
+            <td>
+                <div class="dropdown">
+                    <div id="actionsButton" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <svg width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    </div>
+                    <div class="dropdown-menu" aria-labelledby="actionsButton">
+                        <a class="dropdown-item" [routerLink]="['/admin/templates/form', template._id]" href="javascript:void(0);">Edit Template</a>
+                        <a class="dropdown-item"
+                           data-toggle="modal"
+                           data-target="#deleteModal"
+                           (click)="setTemplateToDeleteId(template._id)"
+                           href="javascript:void(0);">
+                            Delete Template
+                        </a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="empty-list" *ngIf="!templates.length">
+        No templates in list.
+    </div>
+</div>
+<app-pagination *ngIf="templatesCount > itemsCount.value"
+                [lastPage]="pagesCount()"
+                (pageChanged)="pageChanged($event)">
+</app-pagination>
+
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteButton" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content modal-danger">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete Template</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Do you really want to delete this template?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" (click)="deleteTemplate()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>

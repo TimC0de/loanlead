@@ -1,0 +1,194 @@
+@import '../../../common/css/colors';
+@import '../../../common/css/fonts';
+
+header {
+    font-family: $font-roboto-condensed;
+    font-size: 25px;
+    color: $l-darker-blue;
+    letter-spacing: 0.05em;
+}
+
+hr {
+    border-top-width: 2px;
+    background-color: $l-darker-blue;
+}
+
+.filter-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+
+    .filter-block-content {
+        display: flex;
+        height: 100%;
+
+        .text-input-control,
+        .text-select-control {
+            margin: 0;
+
+            &:not(:first-child) {
+                margin-left: 20px;
+            }
+        }
+    }
+
+    button {
+        border: 0;
+        border-radius: 30px;
+        height: 55%;
+
+        font-family: $font-roboto;
+        letter-spacing: 0.01em;
+
+        padding: 10px 30px;
+
+        transition: .3s;
+        box-shadow: 0 0 0 #aaa;
+
+        background-color: $l-blue;
+        color: white;
+
+        &.disabled {
+            opacity: .3;
+        }
+
+        &:hover {
+            box-shadow: 0 0 10px #aaa;
+        }
+
+        @media screen and (max-width: 767.999999px) {
+            margin: 10px 0;
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
+
+.heading {
+    position: relative;
+
+    font-family: $font-roboto;
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.07em;
+    margin: 30px 0 25px;
+
+    &:first-child {
+        margin-top: 0;
+    }
+
+    &:after {
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+
+        display: block;
+        content: '';
+        width: 60%;
+        height: 1.5px;
+        background-color: #777;
+
+        border-radius: 3px;
+    }
+}
+
+table {
+    width: 100%;
+
+    font-family: $font-roboto;
+
+    thead {
+        tr {
+            height: 50px;
+
+            th {
+                position: relative;
+                color: #888;
+                text-align: center;
+                letter-spacing: 0.05em;
+                width: 200px;
+
+                &.important {
+                    color: #333;
+                }
+
+                &:after {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    display: block;
+                    content: '';
+                    width: 100%;
+                    height: 1px;
+                    border-radius: 5px;
+                    background-color: #333;
+                }
+            }
+        }
+    }
+
+    tbody {
+        tr {
+            position: relative;
+            height: 60px;
+            transition: .2s;
+            border-radius: 5px;
+            margin: 10px 0;
+            box-shadow: none;
+
+            td {
+                text-align: center;
+
+                a {
+                    color: $l-blue;
+                    transition: .1s;
+
+                    &:hover {
+                        color: $l-darker-blue;
+                        text-decoration: none;
+                    }
+                }
+
+                #actionsButton {
+                    cursor: pointer;
+                }
+
+                .dropdown-menu a {
+                    &:first-child {
+                        color: $l-blue;
+                    }
+
+                    &:last-child {
+                        color: $l-input-red;
+                    }
+                }
+            }
+
+            .template-text {
+                width: 200px;
+                height: 60px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+
+            &:hover {
+                box-shadow: -3px 0 10px #aaa;
+            }
+        }
+    }
+}
+
+.empty-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+
+    font-family: $font-roboto;
+    font-size: 18px;
+    letter-spacing: 0.01em;
+    color: #999;
+}

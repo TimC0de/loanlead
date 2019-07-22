@@ -1,5 +1,5 @@
 export default {
-    // database connection opions
+    // database connection options
 
     MySQLDatabaseName: "loanlead",
     MySQLUsername: "root",
@@ -8,4 +8,10 @@ export default {
     // encryption options
 
     saltRounds: 9,
+    // messaging options
+
+    messageBaseURL: "http://caltonmobile.com/calton/api.php",
+    messageUsername: "augbazi@gmail.com",
+    messagePassword: "PRINCE?;=2020",
+    messageSender: "LoanLead",
 };

@@ -95,6 +95,14 @@ class UserService extends DBService<User> {
 
         return result;
     }
+
+    public findNotifiableUsersByBranchAndStage(branch: string, role: string) {
+        return this.find({
+            "users.branch_name": branch,
+            "users.role_name": role,
+            "users.receive_sms": true,
+        });
+    }
 }
 
 export default UserService;

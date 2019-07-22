@@ -6,10 +6,16 @@ class RoleService extends DBService<Role> {
         super(Role, Role.getTableName());
     }
 
-    public triggerSmsNotifications(id: number, enable: boolean) {
+    public findCount() {
         return RoleService.knex(this.tableName)
+            .count("id as count");
+    }
+
+    public triggerSmsNotifications(id: number, sendSMS: boolean) {
+        return RoleService.knex(this.tableName)
+            .where("id", id)
             .update({
-                send_sms: enable,
+                send_sms: sendSMS,
             })
             .then((updatedRowsCount) => {
                 if (updatedRowsCount) {

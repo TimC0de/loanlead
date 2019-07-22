@@ -1,1 +1,73 @@
-<p>role works!</p>
+<header>
+    Roles
+</header>
+<hr>
+<div class="filter-block">
+    <div class="filter-block-content col-xl-6 col-md-8 col-sm-10 col-24 p-0 ml-md-3">
+        <div class="text-input-control">
+            <label for="search">
+                Search
+            </label>
+            <input id="search"
+                   type="text"
+                   placeholder="Search"
+                   data-placeholder="Search"
+                   [formControl]="searchValue"
+                   required>
+        </div>
+        <div class="text-input-control">
+            <label for="itemsCount">
+                Show Items
+                <span class="feedback"></span>
+            </label>
+            <input id="itemsCount"
+                   type="text"
+                   placeholder="Search"
+                   data-placeholder="Search"
+                   [formControl]="itemsCount"
+                   (input)="validate()"
+                   (blur)="filter()"
+                   required>
+        </div>
+    </div>
+</div>
+<div class="table-content">
+    <table *ngIf="roles.length">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th class="important">Display Name</th>
+            <th>Name</th>
+            <th class="important">Send SMS</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let role of roles">
+            <td>{{ role._id }}</td>
+            <td>{{ role._displayName }}</td>
+            <td>{{ role._name }}</td>
+            <td>
+                <div class="list-headings">
+                    <div [class.active]="role._sendSms" class="list-heading" (click)="setSendSMS(true, role._id)">
+                        <span>Enable</span>
+                        <div class="list-heading-active"></div>
+                    </div>
+                    <div [class.active]="!role._sendSms" class="list-heading" (click)="setSendSMS(false, role._id)">
+                        <span>Disable</span>
+                        <div class="list-heading-active"></div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="empty-list" *ngIf="!roles.length">
+        No roles in list.
+    </div>
+</div>
+
+<app-pagination *ngIf="rolesCount > itemsCount.value"
+                [lastPage]="pagesCount()"
+                (pageChanged)="pageChanged($event)">
+</app-pagination>
+

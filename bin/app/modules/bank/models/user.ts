@@ -89,6 +89,7 @@ class User extends DBModel {
         this.updatedAt = model.updatedAt;
         this.statusChangeTimestamp = model.statusChangeTimestamp;
         this.createdAt = model.createdAt;
+        this.newlyCreated = model.newlyCreated;
     }
 
     public static getTableName() {

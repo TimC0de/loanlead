@@ -1,7 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {TemplateService} from './template.service';
+import Template from './template.model';
 import {FormControl, Validators} from '@angular/forms';
-import User from '../user/user.model';
-import {UserService} from '../user/user.service';
 import {
     setInputDefaults,
     textInputEventHandler,
@@ -9,37 +9,41 @@ import {
 } from '../../../common/scripts/text-input-control';
 
 @Component({
-    selector: 'app-users-list',
-    templateUrl: './users-list.component.html',
-    styleUrls: ['./users-list.component.scss']
+    selector: 'app-template',
+    templateUrl: './templates.component.html',
+    styleUrls: ['./templates.component.scss']
 })
-export class UsersListComponent implements OnInit {
-    @Input() type: string;
-    @Input() count: number;
-
-    searchValue: FormControl;
-    itemsCount: FormControl;
-    countChanged = false;
-
-    usersCount: number;
-    users: User[] = [];
-
-    constructor(
-        private userService: UserService,
-    ) {}
-
-    ngOnInit() {
-        this.searchValue = new FormControl('');
-        this.itemsCount = new FormControl(
-            '',
-            [
-                Validators.required,
-                Validators.min(5),
-                Validators.max(20)
+export class TemplateComponent implements OnInit {
+    searchValue: FormControl = new FormControl('');
+    itemsCount: FormControl = new FormControl(
+        5,
+        [
+            Validators.required,
+            Validators.min(5),
+            Validators.max(20),
         ]);
 
-        this.itemsCount.setValue(this.count);
-        this.findUsers(1);
+    countChanged = false;
+
+    templates: Template[] = [];
+    templatesCount: number;
+    templateToDeleteId: number;
+
+    constructor(
+        private templateService: TemplateService,
+    ) {
+        this.templateService.findCount()
+            .subscribe((data: Array<{ count: number }>) => {
+                this.templatesCount = data[0].count;
+            });
+
+        this.findTemplates(1);
+    }
+
+    ngOnInit() {
+        document.title = 'Templates';
+
+        this.findTemplates(1);
 
         document
             .querySelectorAll('.text-input-control input')
@@ -122,7 +126,6 @@ export class UsersListComponent implements OnInit {
 
         labelSpan.textContent = textContent;
 
-        this.count = this.itemsCount.value;
         this.countChanged = true;
     }
 
@@ -130,21 +133,42 @@ export class UsersListComponent implements OnInit {
         if (!this.itemsCount.errors && this.countChanged) {
             const page = 1;
 
-            this.findUsers(page);
+            this.findTemplates(page);
 
             this.countChanged = false;
         }
     }
 
-    findUsers(page: number) {
-        this.userService.findTypeCount(this.type)
-            .subscribe((data: number) => {
-                this.usersCount = data;
+    findTemplates(page: number) {
+        this.templateService.findAll(page, this.itemsCount.value)
+            .subscribe((data: Template[]) => {
+                this.templates = data;
             });
+    }
 
-        this.userService.findType(this.type, page, this.count)
-            .subscribe((data: User[]) => {
-                this.users = data;
+    setTemplateToDeleteId(templateId) {
+        this.templateToDeleteId = templateId;
+    }
+
+    deleteTemplate() {
+        this.templateService.delete(this.templateToDeleteId)
+            .subscribe((queryLog: { deletedRowsNumber: number }) => {
+                if (queryLog.deletedRowsNumber) {
+                    const indexOfTemplateToDelete: number = this.templates
+                        .map((template) => template._id)
+                        .indexOf(this.templateToDeleteId);
+
+                    this.templates
+                        .splice(indexOfTemplateToDelete, 1);
+                }
             });
+    }
+
+    pageChanged(newPageNumber: number) {
+        this.findTemplates(newPageNumber);
+    }
+
+    pagesCount() {
+        return Math.floor(this.templatesCount / this.itemsCount.value) + 1;
     }
 }

@@ -53,14 +53,14 @@
             <td>{{ user._branch._entityName }}</td>
             <td *ngIf="type === 'registered'"
                 class="action"
-                (click)="action()">
+                (click)="action(user)">
                 <a href="javascript:void(0);">
                     Approve
                 </a>
             </td>
             <td *ngIf="type === 'online'"
                 class="action"
-                (click)="action()">
+                (click)="action(user)">
                 <a href="javascript:void(0);">
                     Log out
                 </a>

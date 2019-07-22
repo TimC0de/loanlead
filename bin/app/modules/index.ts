@@ -1,11 +1,13 @@
 import Controller from "../core/controller";
 import BankControllers from "./bank";
 import LoansControllers from "./loans";
+import MessageControllers from "./messaging";
 import PhoneNumberController from "./phone_numbers/controllers/phone_number_controller";
 
 const controllers = (BankControllers as Controller[])
     .concat([ PhoneNumberController ])
-    .concat(LoansControllers);
+    .concat(LoansControllers)
+    .concat(MessageControllers);
 
 let mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
 

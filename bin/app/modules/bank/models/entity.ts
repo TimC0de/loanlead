@@ -23,11 +23,8 @@ class Entity extends DBModel {
     @column("description")
     private _description?: string;
 
-    @column("logo_path")
-    private _logoPath?: string;
-
     @column("created_at")
-    private _createdAt?: string;
+    private _createdAt?: Date;
 
     public static columns: { [key: string]: any } = {
         rowModel: { },
@@ -52,7 +49,6 @@ class Entity extends DBModel {
         this.plotNumber = model.plotNumber;
         this.branchesNumber = model.branchesNumber;
         this.description = model.description;
-        this.logoPath = model.logoPath;
         this.createdAt = model.createdAt;
     }
 
@@ -116,20 +112,12 @@ class Entity extends DBModel {
         this._description = value;
     }
 
-    get logoPath(): string {
-        return this._logoPath;
-    }
-
-    set logoPath(value: string) {
-        this._logoPath = value;
-    }
-
-    get createdAt(): string {
+    get createdAt(): Date {
         return this._createdAt;
     }
 
-    set createdAt(value: string) {
-        this._createdAt = value;
+    set createdAt(value: Date) {
+        this._createdAt = value ? value : new Date();
     }
 }
 

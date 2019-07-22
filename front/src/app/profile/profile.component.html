@@ -1,0 +1,87 @@
+<header>
+    Profile Information
+</header>
+<hr>
+<div class="profile-information-container">
+    <div class="heading">
+        Main Information
+    </div>
+    <div class="main-information-container">
+        <div class="picture-container">
+            <label for="userPicture">
+                <img id="selectedPicture" [src]="user._picturePath" alt="User Picture">
+            </label>
+            <input id="userPicture"
+                   type="file"
+                   hidden
+                   (change)="handlePictureInput($event)">
+        </div>
+        <div class="main-information">
+            <div class="field">
+                <div class="field-header">
+                    Full Name
+                </div>
+                <div class="field-value">
+                    {{ user._fullName }}
+                </div>
+            </div>
+            <div class="field-group">
+                <div class="field">
+                    <div class="field-header">
+                        Employee Id
+                    </div>
+                    <div class="field-value">
+                        {{ user._employeeId }}
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="field-header">
+                        Email
+                    </div>
+                    <div class="field-value">
+                        {{ user._email }}
+                    </div>
+                </div>
+            </div>
+            <div class="field-group">
+                <div class="field">
+                    <div class="field-header">
+                        First Phone Number
+                    </div>
+                    <div class="field-value">
+                        {{ user._phoneNumber._firstPhoneNumber }}
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="field-header">
+                        Second Phone Number
+                    </div>
+                    <div class="field-value">
+                        {{ user._phoneNumber._secondPhoneNumber }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="heading">
+        Job Information
+    </div>
+    <div class="job-information-container">
+        <div class="field">
+            <div class="field-header">
+                You're working in:
+            </div>
+            <div class="field-value">
+                {{ user._branch._name + user._branch._entityName}}
+            </div>
+        </div>
+        <div class="field">
+            <div class="field-header">
+                Your role is:
+            </div>
+            <div class="field-value">
+                {{ user._role._displayName }}
+            </div>
+        </div>
+    </div>
+</div>

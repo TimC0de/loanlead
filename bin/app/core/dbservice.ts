@@ -288,8 +288,13 @@ class DBService<T extends DBModel> {
             });
     }
 
-    public findAll() {
-        return this.find();
+    public findAll(page?: number, limit?: number) {
+        return this.find(
+            null,
+            null,
+            page,
+            limit,
+        );
     }
 
     public findById(id: number) {

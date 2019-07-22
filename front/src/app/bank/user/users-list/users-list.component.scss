@@ -1,5 +1,5 @@
-@import '../../../common/css/colors';
-@import '../../../common/css/fonts';
+@import '../../../../common/css/colors';
+@import '../../../../common/css/fonts';
 
 .filter-block {
     display: flex;
@@ -75,6 +75,16 @@ table {
 
             td {
                 text-align: center;
+
+                a {
+                    color: $l-blue;
+                    transition: .1s;
+
+                    &:hover {
+                        color: $l-darker-blue;
+                        text-decoration: none;
+                    }
+                }
             }
         }
     }

@@ -1,1 +1,108 @@
-<p>branch works!</p>
+<header>
+    Branches
+</header>
+<hr>
+<div class="filter-block">
+    <div class="filter-block-content col-xl-6 col-md-8 col-sm-10 col-24 p-0 ml-md-3">
+        <div class="text-input-control">
+            <label for="search">
+                Search
+            </label>
+            <input id="search"
+                   type="text"
+                   placeholder="Search"
+                   data-placeholder="Search"
+                   [formControl]="searchValue"
+                   required>
+        </div>
+        <div class="text-input-control">
+            <label for="itemsCount">
+                Show Items
+                <span class="feedback"></span>
+            </label>
+            <input id="itemsCount"
+                   type="text"
+                   placeholder="Search"
+                   data-placeholder="Search"
+                   [formControl]="itemsCount"
+                   (input)="validate()"
+                   (blur)="filter()"
+                   required>
+        </div>
+    </div>
+    <button routerLink="/admin/entities/form">Create Branch</button>
+</div>
+<div class="table-container">
+    <table *ngIf="branches.length">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th class="important">Name</th>
+            <th class="important">Entity Name</th>
+            <th>Type</th>
+            <th>District</th>
+            <th>Town</th>
+            <th>Created At</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let branch of branches">
+            <td>{{ branch._id }}</td>
+            <td>{{ branch._name }}</td>
+            <td>{{ branch._entityName }}</td>
+            <td>{{ branch._type }}</td>
+            <td>{{ branch._district }}</td>
+            <td>{{ branch._town }}</td>
+            <td>{{ formatDate(branch._createdAt) }}</td>
+            <td>
+                <div class="dropdown">
+                    <div id="actionsButton" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <svg width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    </div>
+                    <div class="dropdown-menu" aria-labelledby="actionsButton">
+                        <a class="dropdown-item" [routerLink]="['/admin/branches/form', branch._id]" href="javascript:void(0);">Edit Branch</a>
+                        <a class="dropdown-item"
+                           data-toggle="modal"
+                           data-target="#deleteModal"
+                           (click)="setBranchToDeleteId(branch._id)"
+                           href="javascript:void(0);">
+                            Delete Branch
+                        </a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="empty-list" *ngIf="!branches.length">
+        No branches in list.
+    </div>
+</div>
+<app-pagination *ngIf="branchesCount > itemsCount.value"
+                [lastPage]="pagesCount()"
+                (pageChanged)="pageChanged($event)">
+</app-pagination>
+
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteButton" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content modal-danger">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete Branch</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Do you really want to delete this branch?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" (click)="deleteBranch()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>

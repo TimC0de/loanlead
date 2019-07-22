@@ -1,0 +1,35 @@
+<div *ngIf="lastPage > 5" class="pagination-container">
+    <div class="pagination">
+        <div id="page_1" class="active" (click)="changePage(1)">
+            <span>1</span>
+        </div>
+        <div *ngIf="currentPage > 3">
+            <span>...</span>
+        </div>
+        <div [id]="'page_' + (getDivPage() - 1)" (click)="changePage(getDivPage() - 1)">
+            <span>{{ getDivPage() - 1 }}</span>
+        </div>
+        <div [id]="'page_' + getDivPage()" class="mid-page" (click)="changePage(getDivPage())">
+            <span>{{ getDivPage() }}</span>
+        </div>
+        <div [id]="'page_' + (getDivPage() + 1)" (click)="changePage(getDivPage() + 1)">
+            <span>{{ getDivPage() + 1 }}</span>
+        </div>
+        <div *ngIf="currentPage < lastPage - 2">
+            <span>...</span>
+        </div>
+        <div [id]="'page_' + lastPage" (click)="changePage(lastPage)">
+            <span>{{ lastPage }}</span>
+        </div>
+    </div>
+</div>
+<div *ngIf="lastPage <= 5" class="pagination-container">
+    <div class="pagination">
+        <div *ngFor="let i of defaultPages()"
+             [class.active]="i === 1"
+             [id]="'page_' + i"
+             (click)="changePage(i)">
+            <span>{{ i }}</span>
+        </div>
+    </div>
+</div>

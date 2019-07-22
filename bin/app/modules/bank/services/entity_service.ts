@@ -5,6 +5,14 @@ class EntityService extends DBService<Entity> {
     public constructor() {
         super(Entity, Entity.getTableName());
     }
+
+    public isUnique(type: string, value: string) {
+        return EntityService.knex("entities")
+            .where(type, value)
+            .then((data) => {
+                return !(data && data.length);
+            });
+    }
 }
 
 export default EntityService;

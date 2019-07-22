@@ -7,20 +7,35 @@ import put from "../../../core/decorators/put";
 import Branch from "../models/branch";
 import BranchService from "../services/branch_service";
 
+const replaceUnderscore = (s: string): string => {
+    return s.replace("_", "");
+};
+
 class BranchController extends Controller {
     private static branchService: BranchService = new BranchService();
     public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
 
     @get("/branches/")
-    public static index(req, res): void {
-        BranchController.branchService.findAll()
+    public static index(req, res) {
+        const page: number = req.query.page;
+        const limit: number = req.query.limit;
+
+        BranchController.branchService.findAll(page, limit)
+            .then((data) => {
+                res.send(data);
+            });
+    }
+
+    @get("/branches/count")
+    public static findBranchesCount(req, res) {
+        BranchController.branchService.findCount()
             .then((data) => {
                 res.send(data);
             });
     }
 
     @get("/branches/:id")
-    public static findById(req, res): void {
+    public static findById(req, res) {
         const id: number = req.params.id;
 
         BranchController.branchService.findById(id)
@@ -31,7 +46,13 @@ class BranchController extends Controller {
 
     @post("/branches/")
     public static addBranch(req, res): void {
-        const branch: Branch = DBModel.valueOfRequest<Branch>(req.query, Branch);
+        const requestBody: { [key: string]: any } = Object.create(null);
+        
+        Object.keys(req.body).forEach((key) => {
+            requestBody[replaceUnderscore(key)] = req.body[key];
+        });
+
+        const branch: Branch = new Branch(requestBody);
 
         BranchController.branchService.add(branch)
             .then((branches) => {
@@ -41,8 +62,14 @@ class BranchController extends Controller {
 
     @put("/branches/:id")
     public static updateBranch(req, res): void {
-        const branch: Branch = DBModel.valueOfRequest<Branch>(req.query, Branch);
         const id: number = req.params.id;
+        const requestBody: { [key: string]: any } = Object.create(null);
+
+        Object.keys(req.body).forEach((key) => {
+            requestBody[replaceUnderscore(key)] = req.body[key];
+        });
+
+        const branch: Branch = new Branch(requestBody);
 
         BranchController.branchService.update(branch, id)
             .then((branches) => {
@@ -56,7 +83,9 @@ class BranchController extends Controller {
 
         BranchController.branchService.delete(id)
             .then((data) => {
-                res.send({ deletedRows: data });
+                res.send({
+                    deletedRowsNumber: data,
+                });
             });
     }
 }

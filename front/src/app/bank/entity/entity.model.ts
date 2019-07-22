@@ -6,7 +6,6 @@ class Entity {
     _plotNumber?: string;
     _branchesNumber?: number;
     _description?: string;
-    _logoPath?: string;
     _createdAt?: string;
 }
 

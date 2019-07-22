@@ -1,0 +1,45 @@
+@import '../../../common/css/colors';
+@import '../../../common/css/fonts';
+
+.content-container {
+    width: 100%;
+    height: 100%;
+
+    header {
+        font-family: $font-roboto-condensed;
+        font-size: 25px;
+        color: $l-darker-blue;
+        letter-spacing: 0.05em;
+    }
+
+    hr {
+        border-top-width: 2px;
+        background-color: $l-darker-blue;
+    }
+
+    .link-container {
+        overflow: hidden;
+
+        > * {
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 50px;
+            width: 300px;
+
+            font-family: $font-roboto;
+            font-size: 18px;
+            letter-spacing: 0.075em;
+
+            border-radius: 10px;
+            color: black;
+            transition: .2s;
+
+            cursor: pointer;
+
+            &:hover {
+                color: $l-blue;
+            }
+        }
+    }
+}

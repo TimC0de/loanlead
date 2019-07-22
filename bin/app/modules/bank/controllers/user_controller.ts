@@ -17,21 +17,9 @@ class UserController extends Controller {
     private static phoneService: PhoneNumberService = new PhoneNumberService();
     public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
 
-    @get("/users/:type/count")
-    public static findTypeCount(req, res) {
-        const type: string = req.params.type;
-
-        UserController.userService.findTypeCount(type)
-            .then((data: number) => {
-                res.send({
-                    count: data,
-                });
-            });
-    }
-
-    @get("/users/:type")
+    @get("/users/")
     public static findType(req, res) {
-        const type: string = req.params.type;
+        const type: string = req.query.type;
         const page: number = req.query.page;
         const limit: number = req.query.limit;
 
@@ -40,12 +28,16 @@ class UserController extends Controller {
                 res.send(data);
             });
     }
+    
+    @get("/users/count")
+    public static findTypeCount(req, res) {
+        const type: string = req.params.type;
 
-    @get("/users/")
-    public static index(req, res) {
-        UserController.userService.findAll()
-            .then((users) => {
-                res.send(users);
+        UserController.userService.findTypeCount(type)
+            .then((data: number) => {
+                res.send({
+                    count: data,
+                });
             });
     }
 
@@ -147,7 +139,9 @@ class UserController extends Controller {
 
         UserController.userService.delete(id)
             .then((data) => {
-                res.send(data);
+                res.send({
+                    deletedRowsNumber: data,
+                });
             });
     }
 

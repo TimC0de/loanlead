@@ -5,6 +5,8 @@ class LoanService extends DBService<Loan> {
     public constructor() {
         super(Loan, Loan.getTableName());
     }
+
+    
 }
 
 export default LoanService;

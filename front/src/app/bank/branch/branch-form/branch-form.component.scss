@@ -1,0 +1,82 @@
+@import '../../../../common/css/colors';
+@import '../../../../common/css/fonts';
+
+header {
+    font-family: $font-roboto-condensed;
+    font-size: 25px;
+    color: $l-darker-blue;
+    letter-spacing: 0.05em;
+}
+
+> hr {
+    border-top-width: 2px;
+    background-color: $l-darker-blue;
+}
+
+.form-content {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    hr {
+        margin: 10px 0;
+    }
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+    margin-top: 30px;
+
+    .backLink {
+        color: black;
+        opacity: .5;
+        transition: .4s;
+        cursor: pointer;
+
+        svg {
+            width: 35px;
+            height: 35px;
+        }
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    .submit {
+        button {
+            border: 0;
+            border-radius: 30px;
+
+            font-family: $font-roboto;
+            letter-spacing: 0.01em;
+
+            padding: 10px 30px;
+
+            transition: .3s;
+            box-shadow: 0 0 0 #aaa;
+
+            background-color: $l-blue;
+            color: white;
+
+            &.disabled {
+                opacity: .3;
+            }
+
+            &:hover {
+                box-shadow: 0 0 10px #aaa;
+            }
+
+            @media screen and (max-width: 767.999999px) {
+                margin: 10px 0;
+            }
+
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+}
