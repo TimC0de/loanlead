@@ -1,19 +1,18 @@
 import * as Knex from "knex";
 import {QueryBuilder} from "knex";
 import DBModel from "./dbmodel";
+import ManyToManyRelation from "./interfaces/manyToManyRelation";
+import Relation from "./interfaces/relation";
+import Utils from "./utils";
 
-const capitaliseString = (s: string): string => {
-    return s.charAt(0).toUpperCase() + s.slice(1);
-};
-
-class DBService<T extends DBModel> {
+class DBService<T extends DBModel > {
     protected static _knex: Knex;
-    protected DBModelClass: new (model: { [key: string]: any }) => T;
     protected tableName: string;
+    protected model: T;
 
-    protected constructor(DBModelClass: new (model: { [key: string]: any }) => T, tableName: string) {
-        this.DBModelClass = DBModelClass;
-        this.tableName = tableName;
+    public constructor(model: T) {
+        this.tableName = "";
+        this.model = model;
     }
 
     static get knex(): Knex {
@@ -24,35 +23,28 @@ class DBService<T extends DBModel> {
         this._knex = _knex;
     }
 
-    protected findCount(
-        optionsObject?: { [key: string]: any },
-    ) {
+    public findCount(optionsObject?: object) {
         let query = DBService.knex(this.tableName);
 
         if (optionsObject) {
             Object.keys(optionsObject).forEach((key) => {
-                const baseFunctionName: string = optionsObject[key].logicalFunction
-                    ? "orWhere"
-                    : "where";
+                const baseFunctionName: string = optionsObject[key].logicalFunction ? "orWhere" : "where";
 
                 if (optionsObject[key].range) {
                     const functionName: string =
-                        baseFunctionName + capitaliseString(optionsObject[key].rangeFunction);
+                        baseFunctionName + Utils.capitaliseString(optionsObject[key].rangeFunction);
 
-                    query = query[functionName](
-                        key,
-                        optionsObject[key].range,
-                    );
+                    query = query[functionName](key, optionsObject[key].range);
                 } else {
-                    query = query[baseFunctionName](
-                        key,
-                        optionsObject[key].conditionOperator
-                            ? optionsObject[key].conditionOperator
-                            : "=",
-                        typeof optionsObject[key] === "object"
-                            ? optionsObject[key].conditionValue
-                            : optionsObject[key],
-                    );
+                    const conditionOperator = optionsObject[key].conditionOperator
+                        ? optionsObject[key].conditionOperator
+                        : "=";
+
+                    const conditionValue = typeof optionsObject[key] === "object"
+                        ? optionsObject[key].conditionValue
+                        : optionsObject[key];
+
+                    query = query[baseFunctionName](key, conditionOperator, conditionValue);
                 }
             });
         }
@@ -61,104 +53,57 @@ class DBService<T extends DBModel> {
     }
 
     protected find(
-        optionsObject?: { [key: string]: any },
+        optionsObject?: object,
         orderByColumn?: string,
         page?: number,
         limit?: number,
     ) {
         let query: QueryBuilder = DBService.knex(this.tableName);
-        let relations: Array<{ [key: string]: any }> = [];
-        let manyToManyRelations: Array<{ [key: string]: any }> = [];
-
-        // find relations static property
-        Object.keys(this.DBModelClass).forEach((key) => {
-            if (key === "relations") {
-                relations = this.DBModelClass[key];
-            }
-
-            if (key === "manyToManyRelations") {
-                manyToManyRelations = this.DBModelClass[key];
-            }
-        });
+        const relations: Relation[] = this.model.relations;
+        const manyToManyRelations: ManyToManyRelation[] = this.model.manyToManyRelations;
 
         // storing related table names
-        const relatedTablesName: string[] = [];
+        const relatedTablesName: string[] =
+            relations.map((relation) => relation.model.getTableName());
 
-        relations.forEach((relation) => {
-            Object.keys(relation.dbModel).forEach((key) => {
-                if (key === "getTableName") {
-                    relatedTablesName.push(relation.dbModel[key]());
-                }
-            });
-        });
-
-        const manyToManyRelatedTablesName: string[] = [];
-
-        manyToManyRelations.forEach((relation) => {
-            Object.keys(relation.relatedModelClass).forEach((key) => {
-                if (key === "getTableName") {
-                    manyToManyRelatedTablesName.push(relation.relatedModelClass[key]());
-                }
-            });
-        });
+        const manyToManyRelatedTablesName: string[] =
+            manyToManyRelations.map((relation) => relation.model.getTableName());
 
         // define selected columns
-        let entityClasses: Array<new (model: { [key: string]: any }) => T> =
-            [this.DBModelClass];
+        let models: DBModel[] = [ this.model ];
 
         if (relations) {
-            entityClasses = entityClasses
-                .concat(
-                    relations
-                        .map((relation) => relation.dbModel),
-                );
+            models = models
+                .concat( relations.map((relation) => relation.model) );
         }
 
         if (manyToManyRelations) {
-            entityClasses = entityClasses
-                .concat(
-                    manyToManyRelations
-                        .map((relation) => relation.relatedModelClass),
-                );
-
+            models = models
+                .concat( manyToManyRelations.map((relation) => relation.model) );
         }
 
         const columns: Array<{ [key: string]: string }> = [];
-        const tableNames: string[] = [];
+        const tableNames: string[] = models.map((model) => model.getTableName());
 
-        entityClasses.forEach((entityClass) => {
-            Object.keys(entityClass).forEach((key) => {
-                if (key === "getTableName") {
-                    tableNames.push(entityClass[key]());
-                }
+        models.forEach((model, index) => {
+            model.columns.forEach((columnName) => {
+                const column: { [key: string]: string } = {};
+                const tableName: string = tableNames[index];
+
+                column[`${tableName}_${columnName}`] = `${tableName}.${columnName}`;
+
+                columns.push(column);
             });
         });
 
-        entityClasses.forEach((entityClass, index) => {
-            Object.keys(entityClass).forEach((key) => {
-                if (key === "columns") {
-                    const modelRowColumns: { [key: string]: string } = entityClass[key].modelRow;
-
-                    Object.keys(modelRowColumns).forEach((modelRowColumnKey) => {
-                        const columnAlias: { [key: string]: string } = Object.create(null);
-                        columnAlias[`${tableNames[index]}_${modelRowColumns[modelRowColumnKey]}`] =
-                            `${tableNames[index]}.${modelRowColumns[modelRowColumnKey]}`;
-
-                        columns.push(columnAlias);
-                    });
-                }
-            });
-        });
-
-        query = query
-            .column(columns);
+        query = query.column(columns);
 
         // cross join with related table
         relations.forEach((relation, index: number) => {
             query = query.crossJoin(
                 relatedTablesName[index],
                 `${this.tableName}.${relation.targetColumn}`,
-                `${relatedTablesName[index]}.${relation.dbModelColumn}`,
+                `${relatedTablesName[index]}.${relation.relatedColumn}`,
             );
         });
 
@@ -179,38 +124,32 @@ class DBService<T extends DBModel> {
         // setting query conditions
         if (optionsObject) {
             Object.keys(optionsObject).forEach((key) => {
-                const baseFunctionName: string = optionsObject[key].logicalFunction
-                    ? "orWhere"
-                    : "where";
+                const baseFunctionName: string = optionsObject[key].logicalFunction ? "orWhere" : "where";
 
                 if (optionsObject[key].range) {
                     const functionName: string =
-                        baseFunctionName + capitaliseString(optionsObject[key].rangeFunction);
+                        baseFunctionName + Utils.capitaliseString(optionsObject[key].rangeFunction);
 
-                    query = query[functionName](
-                        key,
-                        optionsObject[key].range,
-                    );
+                    query = query[functionName](key, optionsObject[key].range);
                 } else {
-                    query = query[baseFunctionName](
-                        key,
-                        optionsObject[key].conditionOperator
-                            ? optionsObject[key].conditionOperator
-                            : "=",
-                        typeof optionsObject[key] === "object"
-                            ? optionsObject[key].conditionValue
-                            : optionsObject[key],
-                    );
+                    const conditionOperator = optionsObject[key].conditionOperator
+                        ? optionsObject[key].conditionOperator
+                        : "=";
+
+                    const conditionValue = typeof optionsObject[key] === "object"
+                        ? optionsObject[key].conditionValue
+                        : optionsObject[key];
+
+                    query = query[baseFunctionName](key, conditionOperator, conditionValue);
                 }
             });
         }
 
         // ordering query by specified column
-        query = query
-            .orderBy(orderByColumn
-                ? orderByColumn
-                : `${this.tableName}.id`,
-            );
+        query = query.orderBy(orderByColumn
+            ? orderByColumn
+            : `${this.tableName}.id`,
+        );
 
         if (limit) {
             query = query.limit(limit);
@@ -223,7 +162,7 @@ class DBService<T extends DBModel> {
         // process result
         return query
             .then((data) => {
-                const models: T[] = [];
+                const resultModels: T[] = [];
                 let firstIteration: boolean = true;
                 let previousIndex: number = 0;
 
@@ -245,33 +184,26 @@ class DBService<T extends DBModel> {
                         if (newRelationIndex > -1) {
                             const relation = manyToManyRelations[newRelationIndex];
 
-                            models[models.length - 1][relation.relatedModelField].push(
-                                DBModel.valueOfRow(
-                                    row,
-                                    relation.dbModel,
-                                    `${relatedTablesName[newRelationIndex]}_`),
-                            );
+                            models[models.length - 1][relation.relatedModel]
+                                .push(
+                                    Object.assign({}, this.model)
+                                        .assignRow(row, `${relatedTablesName[newRelationIndex]}_`),
+                                );
                         }
                     } else {
-                        const model: T = DBModel.valueOfRow<T>(
-                            row,
-                            this.DBModelClass,
-                            `${this.tableName}_`,
-                        );
+                        const model: T = Object.create(new DBModel())
+                            .assignRow( row, `${this.tableName}_`);
 
                         relations.forEach((relation, relationIndex) => {
-                            model[relation.relatedModelField] = DBModel.valueOfRow(
+                            model[relation.relatedModelField] = Object.assign({}, this.model).assignRow(
                                 row,
-                                relation.dbModel,
                                 `${relatedTablesName[relationIndex]}_`);
                         });
 
                         manyToManyRelations.forEach((relation, relationIndex) => {
                             model[relation.relatedModel] = [
-                                DBModel.valueOfRow(
-                                    row,
-                                    relation.relatedModelClass,
-                                    `${manyToManyRelatedTablesName[relationIndex]}_`),
+                                Object.assign({}, this.model)
+                                    .assignRow( row, `${manyToManyRelatedTablesName[relationIndex]}_`),
                             ];
                         });
 
@@ -306,7 +238,7 @@ class DBService<T extends DBModel> {
 
     public add(model: T) {
         return DBService.knex(this.tableName)
-            .insert(DBModel.parseToRow<T>(model))
+            .insert(model.parseToRow())
             .then((insertedRowsIds) => {
                 if (insertedRowsIds) {
                     return this.findById(insertedRowsIds.pop());
@@ -317,7 +249,7 @@ class DBService<T extends DBModel> {
     public update(model: T, id: number) {
         return DBService.knex(this.tableName)
             .where("id", id)
-            .update(DBModel.parseToRow<T>(model))
+            .update(model.parseToRow())
             .then((updatedRowsCount) => {
                 if (updatedRowsCount) {
                     return this.findById(id);

@@ -1,4 +1,4 @@
-import DBModel from "../../../core/dbmodel";
+import Dbmodel from "../../../core/dbmodel";
 import del from "../../../core/decorators/delete";
 import get from "../../../core/decorators/get";
 import post from "../../../core/decorators/post";
@@ -30,7 +30,7 @@ class LoanTypeController {
 
     @post("/loan_types")
     public static addLoanType(req, res): void {
-        const loanType: LoanType = DBModel.valueOfRequest<LoanType>(req.query, LoanType);
+        const loanType: LoanType = Dbmodel.valueOfRequest<LoanType>(req.query, LoanType);
 
         LoanTypeController.loanTypeService.add(loanType)
             .then((loanTypes) => {
@@ -40,7 +40,7 @@ class LoanTypeController {
 
     @put("/loan_types/:id")
     public static updateLoanType(req, res): void {
-        const loanType: LoanType = DBModel.valueOfRequest<LoanType>(req.query, LoanType);
+        const loanType: LoanType = Dbmodel.valueOfRequest<LoanType>(req.query, LoanType);
         const id: number = req.params.id;
 
         LoanTypeController.loanTypeService.update(loanType, id)

@@ -1,5 +1,7 @@
 import DBModel from "../../../core/dbmodel";
 import column from "../../../core/decorators/column";
+import Relation from "../../../core/interfaces/relation";
+import ManyToManyRelation from "../../../core/interfaces/manyToManyRelation";
 
 class Role extends DBModel {
     @column("id")
@@ -14,29 +16,11 @@ class Role extends DBModel {
     @column("send_sms")
     private _sendSms?: boolean;
 
-    public static columns: { [key: string]: any } = {
-        rowModel: { },
-        modelRow: { },
-    };
+    public columns: Map<string, string> = new Map();
+    public relations: Relation[] = [];
+    public manyToManyRelations: ManyToManyRelation[] = [];
 
-    public static relations: Array<{
-        relation: string,
-        dbModel: new <T extends DBModel>(model: { [key: string]: any }) => T,
-        targetColumn: string,
-        dbModelColumn: string,
-        relatedModelField: string,
-    }> = [];
-
-    public constructor(model: { [key: string]: any }) {
-        super();
-
-        this.id = model.id;
-        this.name = model.name;
-        this.displayName = model.displayName;
-        this.sendSms = model.sendSms;
-    }
-
-    public static getTableName() {
+    public getTableName() {
         return "roles";
     }
 

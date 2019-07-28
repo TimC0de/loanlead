@@ -1,7 +1,7 @@
-import DBModel from "../../../core/dbmodel";
+import Dbmodel from "../../../core/dbmodel";
 import column from "../../../core/decorators/column";
 
-class LoanType extends DBModel {
+class LoanType extends Dbmodel {
     @column("id")
     private _id?: number;
 
@@ -15,7 +15,7 @@ class LoanType extends DBModel {
 
     public static relations: Array<{
         relation: string,
-        dbModel: new <T extends DBModel>(model: { [key: string]: any }) => T,
+        dbModel: new <T extends Dbmodel>(model: { [key: string]: any }) => T,
         targetColumn: string,
         dbModelColumn: string,
         relatedModelField: string,

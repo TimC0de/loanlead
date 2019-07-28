@@ -1,9 +1,9 @@
-import DBModel from "../../../core/dbmodel";
+import Dbmodel from "../../../core/dbmodel";
 import column from "../../../core/decorators/column";
 import oneToMany from "../../../core/decorators/oneToMany";
 import SMSTemplate from "./sms_template";
 
-class SMSMessage extends DBModel {
+class SMSMessage extends Dbmodel {
     @column("id")
     private _id?: number;
 
@@ -26,7 +26,7 @@ class SMSMessage extends DBModel {
 
     public static relations: Array<{
         relation: string,
-        dbModel: new <T extends DBModel>(model: { [key: string]: any }) => T,
+        dbModel: new <T extends Dbmodel>(model: { [key: string]: any }) => T,
         targetColumn: string,
         dbModelColumn: string,
         relatedModelField: string,

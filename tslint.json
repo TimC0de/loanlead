@@ -9,6 +9,7 @@
     "object-literal-sort-keys": false,
     "no-trailing-whitespace": false,
     "member-ordering": false,
+    "interface-name": false,
     "eofline": false,
     "max-line-length": {
       "options": [150]

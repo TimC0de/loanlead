@@ -1,4 +1,4 @@
-import DBModel from "../../../core/dbmodel";
+import Dbmodel from "../../../core/dbmodel";
 import column from "../../../core/decorators/column";
 import manyToMany from "../../../core/decorators/manyToMany";
 import oneToMany from "../../../core/decorators/oneToMany";
@@ -7,7 +7,7 @@ import Customer from "./customer";
 import LoanProduct from "./loan_product";
 import SecurityType from "./security_type";
 
-class Loan extends DBModel {
+class Loan extends Dbmodel {
     @column("id")
     private _id?: number;
 
@@ -64,14 +64,14 @@ class Loan extends DBModel {
 
     public static relations: Array<{
         relation: string,
-        dbModel: new <T extends DBModel>(model: { [key: string]: any }) => T,
+        dbModel: new <T extends Dbmodel>(model: { [key: string]: any }) => T,
         targetColumn: string,
         dbModelColumn: string,
         relatedModelField: string,
     }> = [];
 
     public static manyToManyRelations: Array<{
-        relatedModelClass: new <T extends DBModel>(model: { [key: string]: any }) => T,
+        relatedModelClass: new <T extends Dbmodel>(model: { [key: string]: any }) => T,
         bridgeTableRelatedModelColumn: string,
         bridgeTableRelatedModel: string,
         bridgeTableName: string,

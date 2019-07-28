@@ -1,21 +1,16 @@
 import bcrypt from "bcrypt";
 import config from "../../../config";
 import Controller from "../../../core/controller";
-import DBModel from "../../../core/dbmodel";
 import del from "../../../core/decorators/delete";
 import get from "../../../core/decorators/get";
 import multipartRequest from "../../../core/decorators/multipartRequest";
 import post from "../../../core/decorators/post";
 import put from "../../../core/decorators/put";
-import PhoneNumber from "../../phone_numbers/models/phone_number";
-import PhoneNumberService from "../../phone_numbers/services/phone_number_service";
 import User from "../models/user";
 import UserService from "../services/user_service";
 
-class UserController extends Controller {
+export default class UserController extends Controller {
     private static userService: UserService = new UserService();
-    private static phoneService: PhoneNumberService = new PhoneNumberService();
-    public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
 
     @get("/users/")
     public static findType(req, res) {
@@ -51,16 +46,10 @@ class UserController extends Controller {
             });
     }
 
-    @multipartRequest()
+    @multipartRequest
     @post("/users/")
     public static addUser(req, res) {
-        const requestObject: { [key: string]: any } = Object.create(null);
-
-        Object.keys(req.body).forEach((key) => {
-            requestObject[key.slice(1)] = req.body[key];
-        });
-
-        const user: User = new User(requestObject);
+        const user: User = new User().assignRequest(req.body);
 
         if (req.files.length) {
             user.picturePath = `assets/images/${req.files[0].filename}`;
@@ -119,7 +108,7 @@ class UserController extends Controller {
 
     @put("/users/:id")
     public static updateUser(req, res) {
-        const user: User = DBModel.valueOfRequest<User>(req.query, User);
+        const user: User = new User().assignRequest(req.body);
         const id: number = req.params.id;
 
         UserController.userService.update(user, id)
@@ -158,5 +147,3 @@ class UserController extends Controller {
             });
     }
 }
-
-export default UserController;

@@ -175,6 +175,7 @@ CREATE TABLE `loans` (
   `customer_id` int(11) NOT NULL,
   `loan_product` varchar(50) NOT NULL,
   `actioned_by` varchar(30) NOT NULL,
+  `stage` varchar(40) NOT NULL,
   `amount` int(11) NOT NULL,
   `tenure` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
@@ -188,10 +189,12 @@ CREATE TABLE `loans` (
   PRIMARY KEY (`id`),
   KEY `loans_ibfk_7` (`customer_id`),
   KEY `loans_ibfk_8` (`loan_product`),
-  KEY `loan_state_users_id_fk` (`actioned_by`),
+  KEY `loans_users_id_fk` (`actioned_by`),
+  KEY `loans_roles_id_fk` (`stage`),
   CONSTRAINT `loans_ibfk_7` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `loans_loan_thresholds_type_fk` FOREIGN KEY (`loan_product`) REFERENCES `loan_products` (`loan_product`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `loan_state_users_id_fk` FOREIGN KEY (`actioned_by`) REFERENCES `users` (`employee_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `loans_users_id_fk` FOREIGN KEY (`actioned_by`) REFERENCES `users` (`employee_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `loans_roles_id_fk` FOREIGN KEY (`stage`) REFERENCES `roles` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1961 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -902,16 +905,18 @@ BEGIN
 
 
 
-    INSERT INTO loans(id, customer_id, loan_product, actioned_by, amount, tenure, created_at, receive_timestamp, defer_stage, type_changed, staged_at, comment, status)
+    INSERT INTO loans(id, customer_id, loan_product, actioned_by, stage, amount, tenure, created_at, receive_timestamp, defer_stage, type_changed, staged_at, comment, status)
 
-    SELECT l.id, l.customer_id, lp.loan_product, u.employee_id, l.amount, l.tenure, l.created_at, l.receive_timestamp, l.stage_deferred, l.type_changed, l.stage_timestamp, l.comment, l.status
+    SELECT l.id, l.customer_id, lp.loan_product, u.employee_id, r.name, l.amount, l.tenure, l.created_at, l.receive_timestamp, l.stage_deferred, l.type_changed, l.stage_timestamp, l.comment, l.status
 
     FROM previous_loanlead.loans AS l,
          loan_products AS lp,
-         users AS u
+         users AS u,
+         roles AS r
 
     WHERE u.id = l.staged_by AND
-          lp.id = l.loan_threshold_id;
+          lp.id = l.loan_threshold_id AND
+          r.id = l.stage;
     
 
     DELETE FROM security_types;

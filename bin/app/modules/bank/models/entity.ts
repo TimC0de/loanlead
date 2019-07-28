@@ -1,7 +1,9 @@
-import DBModel from "../../../core/dbmodel";
+import Dbmodel from "../../../core/dbmodel";
 import column from "../../../core/decorators/column";
+import Relation from "../../../core/interfaces/relation";
+import ManyToManyRelation from "../../../core/interfaces/manyToManyRelation";
 
-class Entity extends DBModel {
+class Entity extends Dbmodel {
     @column("id")
     private _id?: number;
 
@@ -26,33 +28,11 @@ class Entity extends DBModel {
     @column("created_at")
     private _createdAt?: Date;
 
-    public static columns: { [key: string]: any } = {
-        rowModel: { },
-        modelRow: { },
-    };
+    public columns: Map<string, string> = new Map();
+    public relations: Relation[] = [];
+    public manyToManyRelations: ManyToManyRelation[] = [];
 
-    public static relations: Array<{
-        relation: string,
-        dbModel: new <T extends DBModel>(model: { [key: string]: any }) => T,
-        targetColumn: string,
-        dbModelColumn: string,
-        relatedModelField: string,
-    }> = [];
-
-    public constructor(model: { [key: string]: any }) {
-        super();
-
-        this.id = model.id;
-        this.name = model.name;
-        this.shortName = model.shortName;
-        this.boxNumber = model.boxNumber;
-        this.plotNumber = model.plotNumber;
-        this.branchesNumber = model.branchesNumber;
-        this.description = model.description;
-        this.createdAt = model.createdAt;
-    }
-
-    public static getTableName() {
+    public getTableName() {
         return "entities";
     }
 

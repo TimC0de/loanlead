@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import config from "../config";
-import DBModel from "./dbmodel";
+import Dbmodel from "./dbmodel";
 import DBService from "./dbservice";
 
 const formatDate = (d: Date): string => {
@@ -27,9 +27,9 @@ const formatDate = (d: Date): string => {
     return `${d.getFullYear()}-${month}-${date} ${hours}:${minutes}:${seconds}`;
 };
 
-class MigrationService extends DBService<DBModel> {
+class MigrationService extends DBService<Dbmodel> {
     public constructor() {
-        super(DBModel, "");
+        super(Dbmodel, "");
     }
 
     public static migrate() {

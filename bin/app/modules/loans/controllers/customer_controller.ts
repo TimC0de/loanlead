@@ -1,5 +1,5 @@
 import Controller from "../../../core/controller";
-import DBModel from "../../../core/dbmodel";
+import Dbmodel from "../../../core/dbmodel";
 import del from "../../../core/decorators/delete";
 import get from "../../../core/decorators/get";
 import post from "../../../core/decorators/post";
@@ -40,7 +40,7 @@ class CustomerController extends Controller {
 
     @post("/customers")
     public static addCustomer(req, res) {
-        const customer: Customer = DBModel.valueOfRequest<Customer>(req.query, Customer);
+        const customer: Customer = Dbmodel.valueOfRequest<Customer>(req.query, Customer);
 
         CustomerController.customerService.add(customer)
             .then((customers) => {
@@ -50,7 +50,7 @@ class CustomerController extends Controller {
 
     @put("/customers/:id")
     public static editCustomer(req, res) {
-        const customer: Customer = DBModel.valueOfRequest<Customer>(req.query, Customer);
+        const customer: Customer = Dbmodel.valueOfRequest<Customer>(req.query, Customer);
         const id: number = req.params.id;
 
         CustomerController.customerService.update(customer, id)

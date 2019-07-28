@@ -2,12 +2,14 @@ import DBModel from "../../../core/dbmodel";
 import column from "../../../core/decorators/column";
 import oneToMany from "../../../core/decorators/oneToMany";
 import Entity from "./entity";
+import Relation from "../../../core/interfaces/relation";
+import ManyToManyRelation from "../../../core/interfaces/manyToManyRelation";
 
 class Branch extends DBModel {
     @column("id")
     private _id?: number;
 
-    @oneToMany(Entity, "name", "entity")
+    @oneToMany(Entity.prototype, "name", "entity")
     @column("entity_name")
     private _entityName?: string;
 
@@ -28,32 +30,11 @@ class Branch extends DBModel {
 
     private _entity?: Entity;
 
-    public static columns: { [key: string]: any } = {
-        rowModel: { },
-        modelRow: { },
-    };
+    public columns: Map<string, string> = new Map();
+    public relations: Relation[] = [];
+    public manyToManyRelations: ManyToManyRelation[] = [];
 
-    public static relations: Array<{
-        relation: string,
-        dbModel: new <T extends DBModel>(model: { [key: string]: any }) => T,
-        targetColumn: string,
-        dbModelColumn: string,
-        relatedModelField: string,
-    }> = [];
-
-    public constructor(model: { [key: string]: any }) {
-        super();
-
-        this.id = model.id;
-        this.entityName = model.entityName;
-        this.name = model.name;
-        this.type = model.type;
-        this.district = model.district;
-        this.town = model.town;
-        this.createdAt = model.createdAt;
-    }
-
-    public static getTableName() {
+    public getTableName() {
         return "branches";
     }
 

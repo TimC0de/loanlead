@@ -6,6 +6,14 @@ class LoanController extends Controller {
     public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
     private static loanService: LoanService = new LoanService();
 
+    @get("/")
+    public static test(req, res) {
+        LoanController.loanService.mainLoans()
+            .then((data) => {
+                res.send(data);
+            });
+    }
+
     @get("/loans/main")
     public static getMainLoans(req, res) {
 

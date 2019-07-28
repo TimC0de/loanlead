@@ -1,15 +1,11 @@
 import Controller from "../../../core/controller";
-import DBModel from "../../../core/dbmodel";
 import get from "../../../core/decorators/get";
-import post from "../../../core/decorators/post";
 import put from "../../../core/decorators/put";
-import Role from "../models/role";
 import RoleService from "../services/role_service";
 
-class RoleController extends Controller {
-    public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
+export default class RoleController extends Controller {
     private static roleService: RoleService = new RoleService();
-    
+
     @get("/roles/")
     public static findAllRoles(req, res): void {
         const page = req.query.page;
@@ -40,5 +36,3 @@ class RoleController extends Controller {
             });
     }
 }
-
-export default RoleController;

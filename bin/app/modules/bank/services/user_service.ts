@@ -1,11 +1,11 @@
-import DBModel from "../../../core/dbmodel";
+import Dbmodel from "../../../core/dbmodel";
 import DBService from "../../../core/dbservice";
 import PhoneNumber from "../../phone_numbers/models/phone_number";
 import User from "../models/user";
 
 class UserService extends DBService<User> {
     public constructor() {
-        super(User, User.getTableName());
+        super(User.prototype);
     }
 
     public fieldIsUnique(field: string, value) {
@@ -27,17 +27,17 @@ class UserService extends DBService<User> {
     public findOnlineUsers() {
         return UserService.knex(this.tableName)
             .where("status", "online")
-            .map((row) => DBModel.valueOfRow<User>(row, User));
+            .map((row) => Object.assign({}, User.prototype).assignRow(row));
     }
 
     public findForwardedUsers() {
         return UserService.knex({u: "users", l: "loans_state"})
-            .select(DBModel.getFields<User>("row", User))
+            .select(User.prototype.getFields("row"))
             .where({
                 "l.status": "Forwarded",
                 "l.actioned_by": "u.employee_id",
             })
-            .map((row) => DBModel.valueOfRow<User>(row, User));
+            .map((row) => User.prototype.assignRow(row));
     }
 
     public findUserByEmployeeId(employeeId: string) {

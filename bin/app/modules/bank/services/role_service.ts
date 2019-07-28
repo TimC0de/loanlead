@@ -3,7 +3,7 @@ import Role from "../models/role";
 
 class RoleService extends DBService<Role> {
     public constructor() {
-        super(Role, Role.getTableName());
+        super(Role.prototype);
     }
 
     public findCount() {

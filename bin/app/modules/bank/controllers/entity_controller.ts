@@ -1,5 +1,4 @@
 import Controller from "../../../core/controller";
-import DBModel from "../../../core/dbmodel";
 import del from "../../../core/decorators/delete";
 import get from "../../../core/decorators/get";
 import post from "../../../core/decorators/post";
@@ -7,9 +6,8 @@ import put from "../../../core/decorators/put";
 import Entity from "../models/entity";
 import EntityService from "../services/entity_service";
 
-class EntityController extends Controller {
+export default class EntityController extends Controller {
     private static entityService: EntityService = new EntityService();
-    public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
 
     @get("/entities/")
     public static index(req, res): void {
@@ -31,13 +29,7 @@ class EntityController extends Controller {
 
     @post("/entities")
     public static addEntity(req, res): void {
-        const requestBody: { [key: string]: any } = Object.create(null);
-
-        Object.keys(req.body).forEach((key) => {
-            requestBody[key.slice(1)] = req.body[key];
-        });
-
-        const entity: Entity = new Entity(requestBody);
+        const entity: Entity = new Entity().assignRequest(req.body);
 
         EntityController.entityService.add(entity)
             .then((entities) => {
@@ -47,14 +39,8 @@ class EntityController extends Controller {
 
     @put("/entities/:id")
     public static updateEntity(req, res): void {
-        const requestBody: { [key: string]: any } = Object.create(null);
-
-        Object.keys(req.body).forEach((key) => {
-            requestBody[key.slice(1)] = req.body[key];
-        });
-
-        const entity: Entity = new Entity(requestBody);
         const id: number = req.params.id;
+        const entity: Entity = new Entity().assignRequest(req.body);
 
         EntityController.entityService.update(entity, id)
             .then((entities) => {
@@ -87,5 +73,3 @@ class EntityController extends Controller {
             });
     }
 }
-
-export default EntityController;

@@ -1,34 +1,20 @@
 import DBModel from "../dbmodel";
-
-const replaceUnderscore = (s: string): string => {
-    return s.replace("_", "");
-};
+import Utils from "../utils";
 
 export default function oneToMany<T extends DBModel>(
-    dbModelClass: new (model: { [key: string]: any}) => T,
+    model: T,
     secondTableColumn: string,
     relatedModelProperty: string,
 ) {
     return (target, value: string) => {
-        let columns: {
-            rowModel: { },
-            modelRow: { },
-        } = Object.create(null);
+        const columns: Map<string, string> = target.columns;
 
-        Object.keys(target.constructor).forEach((key) => {
-            if (key === "columns") {
-                columns = target.constructor[key];
-            }
-
-            if (key === "relations") {
-                target.constructor[key].push({
-                    relation: "oneToOne",
-                    dbModel: dbModelClass,
-                    targetColumn: columns.modelRow[replaceUnderscore(value)],
-                    dbModelColumn: secondTableColumn,
-                    relatedModelField: relatedModelProperty,
-                });
-            }
+        target.relations.push({
+            relationType: "oneToMany",
+            model,
+            targetColumn: columns.get(Utils.replaceUnderscore(value)),
+            relatedColumn: secondTableColumn,
+            relatedModelField: relatedModelProperty,
         });
     };
 }

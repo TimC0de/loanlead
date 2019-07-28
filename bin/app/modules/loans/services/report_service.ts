@@ -1,4 +1,4 @@
-import DBModel from "../../../core/dbmodel";
+import Dbmodel from "../../../core/dbmodel";
 import DBService from "../../../core/dbservice";
 import User from "../../bank/models/user";
 import Report from "../models/report";
@@ -35,10 +35,10 @@ class ReportService extends DBService<Report> {
             .map((row: {id: number, reports_id: number, users_id: number}) => {
                 row.id = row.reports_id;
                 
-                const report: Report = DBModel.valueOfRow<Report>(row, Report);
+                const report: Report = Dbmodel.valueOfRow<Report>(row, Report);
                 row.id = row.users_id;
                 
-                report.user = DBModel.valueOfRow<User>(row, User);
+                report.user = Dbmodel.valueOfRow<User>(row, User);
                 
                 return report;
             });

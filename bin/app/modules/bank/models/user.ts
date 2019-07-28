@@ -5,6 +5,8 @@ import oneToOne from "../../../core/decorators/oneToOne";
 import PhoneNumber from "../../phone_numbers/models/phone_number";
 import Branch from "./branch";
 import Role from "./role";
+import Relation from "../../../core/interfaces/relation";
+import ManyToManyRelation from "../../../core/interfaces/manyToManyRelation";
 
 class User extends DBModel {
     @column("id")
@@ -13,15 +15,15 @@ class User extends DBModel {
     @column("employee_id")
     private _employeeId?: string;
 
-    @oneToMany(Role, "name", "role")
+    @oneToMany(Role.prototype, "name", "role")
     @column("role_name")
     private _roleName?: string;
 
-    @oneToMany(Branch, "name", "branch")
+    @oneToMany(Branch.prototype, "name", "branch")
     @column("branch_name")
     private _branchName?: number;
 
-    @oneToOne(PhoneNumber, "id", "phoneNumber")
+    @oneToOne(PhoneNumber.prototype, "id", "phoneNumber")
     @column("phone_numbers_id")
     private _phoneNumbersId?: number;
 
@@ -59,40 +61,11 @@ class User extends DBModel {
     private _role?: Role;
     private _branch?: Branch;
 
-    public static columns: { [key: string]: any } = {
-        rowModel: { },
-        modelRow: { },
-    };
+    public columns: Map<string, string> = new Map();
+    public relations: Relation[] = [];
+    public manyToManyRelations: ManyToManyRelation[] = [];
 
-    public static relations: Array<{
-        relation: string,
-        dbModel: new <T extends DBModel>(model: { [key: string]: any }) => T,
-        targetColumn: string,
-        dbModelColumn: string,
-        relatedModelField: string,
-    }> = [];
-
-    public constructor(model: { [key: string]: any }) {
-        super();
-
-        this.id = model.id;
-        this.employeeId = model.employeeId;
-        this.roleName = model.roleName;
-        this.branchName = model.branchName;
-        this.phoneNumbersId = model.phoneNumbersId;
-        this.password = model.password;
-        this.fullName = model.fullName;
-        this.email = model.email;
-        this.status = model.status;
-        this.picturePath = model.picturePath;
-        this.receiveSms = model.receiveSms;
-        this.updatedAt = model.updatedAt;
-        this.statusChangeTimestamp = model.statusChangeTimestamp;
-        this.createdAt = model.createdAt;
-        this.newlyCreated = model.newlyCreated;
-    }
-
-    public static getTableName() {
+    public getTableName() {
         return "users";
     }
 

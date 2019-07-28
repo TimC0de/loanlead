@@ -3,7 +3,7 @@ import Entity from "../models/entity";
 
 class EntityService extends DBService<Entity> {
     public constructor() {
-        super(Entity, Entity.getTableName());
+        super(Entity.prototype);
     }
 
     public isUnique(type: string, value: string) {

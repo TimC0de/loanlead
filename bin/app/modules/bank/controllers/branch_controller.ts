@@ -1,5 +1,4 @@
 import Controller from "../../../core/controller";
-import DBModel from "../../../core/dbmodel";
 import del from "../../../core/decorators/delete";
 import get from "../../../core/decorators/get";
 import post from "../../../core/decorators/post";
@@ -7,13 +6,8 @@ import put from "../../../core/decorators/put";
 import Branch from "../models/branch";
 import BranchService from "../services/branch_service";
 
-const replaceUnderscore = (s: string): string => {
-    return s.replace("_", "");
-};
-
-class BranchController extends Controller {
+export default class BranchController extends Controller {
     private static branchService: BranchService = new BranchService();
-    public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
 
     @get("/branches/")
     public static index(req, res) {
@@ -46,13 +40,7 @@ class BranchController extends Controller {
 
     @post("/branches/")
     public static addBranch(req, res): void {
-        const requestBody: { [key: string]: any } = Object.create(null);
-        
-        Object.keys(req.body).forEach((key) => {
-            requestBody[replaceUnderscore(key)] = req.body[key];
-        });
-
-        const branch: Branch = new Branch(requestBody);
+        const branch: Branch = new Branch().assignRequest(req.body);
 
         BranchController.branchService.add(branch)
             .then((branches) => {
@@ -63,13 +51,7 @@ class BranchController extends Controller {
     @put("/branches/:id")
     public static updateBranch(req, res): void {
         const id: number = req.params.id;
-        const requestBody: { [key: string]: any } = Object.create(null);
-
-        Object.keys(req.body).forEach((key) => {
-            requestBody[replaceUnderscore(key)] = req.body[key];
-        });
-
-        const branch: Branch = new Branch(requestBody);
+        const branch: Branch = new Branch().assignRequest(req.body);
 
         BranchController.branchService.update(branch, id)
             .then((branches) => {
@@ -89,5 +71,3 @@ class BranchController extends Controller {
             });
     }
 }
-
-export default BranchController;
