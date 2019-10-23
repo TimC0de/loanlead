@@ -9,7 +9,7 @@ const toSnakeCase = (s: string): string => {
 
 class PhoneNumberService extends DBService<PhoneNumber> {
     public constructor() {
-        super(PhoneNumber, PhoneNumber.getTableName());
+        super(PhoneNumber.prototype);
     }
 
     public isUnique(value: string) {

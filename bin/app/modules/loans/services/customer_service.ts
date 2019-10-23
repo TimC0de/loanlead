@@ -3,7 +3,7 @@ import Customer from "../models/customer";
 
 class CustomerService extends DBService<Customer> {
     public constructor() {
-        super(Customer, Customer.getTableName());
+        super(Customer.prototype);
     }
 
     public findLoansCount(customerId: number) {

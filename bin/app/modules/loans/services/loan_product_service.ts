@@ -3,7 +3,7 @@ import LoanProduct from "../models/loan_product";
 
 class LoanProductService extends DBService<LoanProduct> {
     public constructor() {
-        super(LoanProduct, LoanProduct.getTableName());
+        super(LoanProduct.prototype);
     }
 }
 

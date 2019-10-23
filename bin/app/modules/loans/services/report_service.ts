@@ -1,11 +1,11 @@
-import Dbmodel from "../../../core/dbmodel";
 import DBService from "../../../core/dbservice";
 import User from "../../bank/models/user";
 import Report from "../models/report";
+import DBModel from "../../../core/dbmodel";
 
 class ReportService extends DBService<Report> {
     public constructor() {
-        super(Report, Report.getTableName());
+        super(Report.prototype);
     }
 
     public findByLoanId(loanId: number) {
@@ -35,10 +35,10 @@ class ReportService extends DBService<Report> {
             .map((row: {id: number, reports_id: number, users_id: number}) => {
                 row.id = row.reports_id;
                 
-                const report: Report = Dbmodel.valueOfRow<Report>(row, Report);
+                const report: Report = new Report({}).assignRow(row);
                 row.id = row.users_id;
                 
-                report.user = Dbmodel.valueOfRow<User>(row, User);
+                report.user = new User().assignRow(row);
                 
                 return report;
             });

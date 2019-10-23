@@ -1,11 +1,16 @@
 import * as Knex from "knex";
+
 import {QueryBuilder} from "knex";
+
 import DBModel from "./dbmodel";
+
 import ManyToManyRelation from "./interfaces/manyToManyRelation";
+
 import Relation from "./interfaces/relation";
+
 import Utils from "./utils";
 
-class DBService<T extends DBModel > {
+class DBService<T extends DBModel> {
     protected static _knex: Knex;
     protected tableName: string;
     protected model: T;
@@ -70,16 +75,16 @@ class DBService<T extends DBModel > {
             manyToManyRelations.map((relation) => relation.model.getTableName());
 
         // define selected columns
-        let models: DBModel[] = [ this.model ];
+        let models: DBModel[] = [this.model];
 
         if (relations) {
             models = models
-                .concat( relations.map((relation) => relation.model) );
+                .concat(relations.map((relation) => relation.model));
         }
 
         if (manyToManyRelations) {
             models = models
-                .concat( manyToManyRelations.map((relation) => relation.model) );
+                .concat(manyToManyRelations.map((relation) => relation.model));
         }
 
         const columns: Array<{ [key: string]: string }> = [];
@@ -192,7 +197,7 @@ class DBService<T extends DBModel > {
                         }
                     } else {
                         const model: T = Object.create(new DBModel())
-                            .assignRow( row, `${this.tableName}_`);
+                            .assignRow(row, `${this.tableName}_`);
 
                         relations.forEach((relation, relationIndex) => {
                             model[relation.relatedModelField] = Object.assign({}, this.model).assignRow(
@@ -203,7 +208,7 @@ class DBService<T extends DBModel > {
                         manyToManyRelations.forEach((relation, relationIndex) => {
                             model[relation.relatedModel] = [
                                 Object.assign({}, this.model)
-                                    .assignRow( row, `${manyToManyRelatedTablesName[relationIndex]}_`),
+                                    .assignRow(row, `${manyToManyRelatedTablesName[relationIndex]}_`),
                             ];
                         });
 

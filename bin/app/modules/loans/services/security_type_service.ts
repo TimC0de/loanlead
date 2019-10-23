@@ -3,7 +3,7 @@ import SecurityType from "../models/security_type";
 
 class SecurityTypeService extends DBService<SecurityType> {
     public constructor() {
-        super(SecurityType, SecurityType.getTableName());
+        super(SecurityType.prototype);
     }
 }
 

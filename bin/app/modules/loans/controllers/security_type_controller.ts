@@ -1,4 +1,3 @@
-import Dbmodel from "../../../core/dbmodel";
 import del from "../../../core/decorators/delete";
 import get from "../../../core/decorators/get";
 import post from "../../../core/decorators/post";
@@ -30,7 +29,7 @@ class SecurityTypeController {
 
     @post("/security_types")
     public static addSecurityType(req, res): void {
-        const securityType: SecurityType = Dbmodel.valueOfRequest<SecurityType>(req.query, SecurityType);
+        const securityType: SecurityType = new SecurityType({}).assignRequest(req.query);
 
         SecurityTypeController.securityTypeService.add(securityType)
             .then((securityTypes) => {
@@ -40,7 +39,7 @@ class SecurityTypeController {
 
     @put("/security_types/:id")
     public static updateSecurityType(req, res): void {
-        const securityType: SecurityType = Dbmodel.valueOfRequest<SecurityType>(req.query, SecurityType);
+        const securityType: SecurityType = new SecurityType({}).assignRequest(req.query);
         const id: number = req.params.id;
 
         SecurityTypeController.securityTypeService.update(securityType, id)

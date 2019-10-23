@@ -5,6 +5,7 @@ import post from "../../../core/decorators/post";
 import put from "../../../core/decorators/put";
 import PhoneNumber from "../models/phone_number";
 import PhoneNumberService from "../services/phone_number_service";
+import Customer from "../../loans/models/customer";
 
 class PhoneNumberController extends Controller {
     private static phoneNumberService: PhoneNumberService = new PhoneNumberService();
@@ -29,7 +30,7 @@ class PhoneNumberController extends Controller {
             requestObject[key.slice(1)] = req.body[key];
         });
 
-        const phoneNumber: PhoneNumber = Dbmodel.valueOfRequest(requestObject, PhoneNumber);
+        const phoneNumber: PhoneNumber = new PhoneNumber({}).assignRequest(requestObject);
         
         PhoneNumberController.phoneNumberService.add(phoneNumber)
             .then((data) => {

@@ -3,7 +3,7 @@ import SMSTemplate from "../models/sms_template";
 
 class SMSTemplateService extends DBService<SMSTemplate> {
     public constructor() {
-        super(SMSTemplate, SMSTemplate.getTableName());
+        super(SMSTemplate.prototype);
     }
 
     public findTemplateFor(entityType: string, stageId: string) {

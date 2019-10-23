@@ -4,7 +4,7 @@ import Dbmodel from "../../../core/dbmodel";
 
 class LoanService extends DBService<Loan> {
     public constructor() {
-        super(Loan, Loan.getTableName());
+        super(Loan.prototype);
     }
 
     public mainLoans(page?: number, limit?: number) {

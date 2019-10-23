@@ -1,18 +1,27 @@
+
 import * as Knex from "knex";
+
 import Column from "./interfaces/column";
+
 import ManyToManyRelation from "./interfaces/manyToManyRelation";
+
 import Relation from "./interfaces/relation";
 
 class DBModel {
+
     public columns: Map<string, string> = new Map();
+
     public relations: Relation[] = [];
+
     public manyToManyRelations: ManyToManyRelation[] = [];
 
     public getTableName() {
+
         return "";
     }
 
     public parseToRow(): object {
+        
         const result: object = {};
 
         this.columns.forEach((value, key) => {

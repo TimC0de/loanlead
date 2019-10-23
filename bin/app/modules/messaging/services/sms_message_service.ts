@@ -38,7 +38,7 @@ class SMSMessageService extends DBService<SMSMessage> {
     private smsTemplateService: SMSTemplateService = new SMSTemplateService();
 
     public constructor() {
-        super(SMSMessage, SMSMessage.getTableName());
+        super(SMSMessage.prototype);
     }
 
     public findCount() {
