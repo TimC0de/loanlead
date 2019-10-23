@@ -11,11 +11,11 @@ class Loan extends Dbmodel {
     @column("id")
     private _id?: number;
 
-    @oneToMany(Customer, "id", "_customer")
+    @oneToMany(Customer.prototype, "id", "_customer")
     @column("customer_id")
     private _customerId?: number;
 
-    @oneToMany(LoanProduct, "loan_product", "_loanProductObject")
+    @oneToMany(LoanProduct.prototype, "loan_product", "_loanProductObject")
     @column("loan_product")
     private _loanProduct?: string;
 
@@ -37,7 +37,7 @@ class Loan extends Dbmodel {
     @column("type_changed")
     private _typeChanged?: boolean;
 
-    @oneToMany(User, "employee_id", "user")
+    @oneToMany(User.prototype, "employee_id", "user")
     @column("actioned_by")
     private _actionedBy?: string;
 
@@ -50,7 +50,7 @@ class Loan extends Dbmodel {
     @column("staged_at")
     private _stagedAt?: Date;
 
-    @manyToMany(SecurityType, "security_type_id", "loan_id", "loans_security_types")
+    @manyToMany(SecurityType.prototype, "security_type_id", "loan_id", "loans_security_types")
     private _securityTypes?: SecurityType[];
 
     private _user?: User;

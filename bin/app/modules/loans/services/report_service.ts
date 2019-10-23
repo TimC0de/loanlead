@@ -1,7 +1,6 @@
 import DBService from "../../../core/dbservice";
 import User from "../../bank/models/user";
 import Report from "../models/report";
-import DBModel from "../../../core/dbmodel";
 
 class ReportService extends DBService<Report> {
     public constructor() {
@@ -17,7 +16,7 @@ class ReportService extends DBService<Report> {
     public findBetweenDatesOrderByLoanId(firstDate: string, secondDate: string) {
         console.log(firstDate, secondDate);
 
-        return ReportService.knex(this.tableName)
+        return ReportService.knex(this.table)
             .column(["*", {reports_id: "reports.id"}, {users_id: "users.id"}])
             .crossJoin(
                 "users", 

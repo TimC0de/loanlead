@@ -1,4 +1,3 @@
-
 import DBService from "../../../core/dbservice";
 import Branch from "../models/branch";
 
@@ -8,7 +7,7 @@ class BranchService extends DBService<Branch> {
     }
 
     public findCount() {
-        return BranchService.knex(this.tableName)
+        return BranchService.knex(this.table)
             .count("id as count");
     }
 }

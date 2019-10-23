@@ -1,22 +1,17 @@
 import * as Knex from "knex";
-
 import {QueryBuilder} from "knex";
-
 import DBModel from "./dbmodel";
-
 import ManyToManyRelation from "./interfaces/manyToManyRelation";
-
 import Relation from "./interfaces/relation";
-
 import Utils from "./utils";
 
 class DBService<T extends DBModel> {
     protected static _knex: Knex;
-    protected tableName: string;
+    protected table: string;
     protected model: T;
 
     public constructor(model: T) {
-        this.tableName = "";
+        this.table = "";
         this.model = model;
     }
 
@@ -28,9 +23,7 @@ class DBService<T extends DBModel> {
         this._knex = _knex;
     }
 
-    public findCount(optionsObject?: object) {
-        let query = DBService.knex(this.tableName);
-
+    public setConditions(optionsObject: object, query: QueryBuilder): QueryBuilder {
         if (optionsObject) {
             Object.keys(optionsObject).forEach((key) => {
                 const baseFunctionName: string = optionsObject[key].logicalFunction ? "orWhere" : "where";
@@ -54,6 +47,16 @@ class DBService<T extends DBModel> {
             });
         }
 
+        return query;
+    }
+
+    public findCount(optionsObject?: object) {
+        let query = DBService.knex(this.table);
+
+        if (optionsObject) {
+            query = this.setConditions(optionsObject, query);
+        }
+
         return query.count();
     }
 
@@ -63,7 +66,7 @@ class DBService<T extends DBModel> {
         page?: number,
         limit?: number,
     ) {
-        let query: QueryBuilder = DBService.knex(this.tableName);
+        let query: QueryBuilder = DBService.knex(this.table);
         const relations: Relation[] = this.model.relations;
         const manyToManyRelations: ManyToManyRelation[] = this.model.manyToManyRelations;
 
@@ -107,7 +110,7 @@ class DBService<T extends DBModel> {
         relations.forEach((relation, index: number) => {
             query = query.crossJoin(
                 relatedTablesName[index],
-                `${this.tableName}.${relation.targetColumn}`,
+                `${this.table}.${relation.targetColumn}`,
                 `${relatedTablesName[index]}.${relation.relatedColumn}`,
             );
         });
@@ -116,7 +119,7 @@ class DBService<T extends DBModel> {
             query = query
                 .crossJoin(
                     relation.bridgeTableName,
-                    `${this.tableName}.id`,
+                    `${this.table}.id`,
                     `${relation.bridgeTableName}.${relation.bridgeTableModelColumn}`,
                 )
                 .crossJoin(
@@ -128,32 +131,13 @@ class DBService<T extends DBModel> {
 
         // setting query conditions
         if (optionsObject) {
-            Object.keys(optionsObject).forEach((key) => {
-                const baseFunctionName: string = optionsObject[key].logicalFunction ? "orWhere" : "where";
-
-                if (optionsObject[key].range) {
-                    const functionName: string =
-                        baseFunctionName + Utils.capitaliseString(optionsObject[key].rangeFunction);
-
-                    query = query[functionName](key, optionsObject[key].range);
-                } else {
-                    const conditionOperator = optionsObject[key].conditionOperator
-                        ? optionsObject[key].conditionOperator
-                        : "=";
-
-                    const conditionValue = typeof optionsObject[key] === "object"
-                        ? optionsObject[key].conditionValue
-                        : optionsObject[key];
-
-                    query = query[baseFunctionName](key, conditionOperator, conditionValue);
-                }
-            });
+            query = this.setConditions(optionsObject, query);
         }
 
         // ordering query by specified column
         query = query.orderBy(orderByColumn
             ? orderByColumn
-            : `${this.tableName}.id`,
+            : `${this.table}.id`,
         );
 
         if (limit) {
@@ -173,7 +157,7 @@ class DBService<T extends DBModel> {
 
                 data.forEach((row, index) => {
                     if (!firstIteration &&
-                        data[previousIndex][`${this.tableName}_id`] === data[index][`${this.tableName}_id`]
+                        data[previousIndex][`${this.table}_id`] === data[index][`${this.table}_id`]
                     ) {
                         let newRelationIndex: number = -1;
 
@@ -197,7 +181,7 @@ class DBService<T extends DBModel> {
                         }
                     } else {
                         const model: T = Object.create(new DBModel())
-                            .assignRow(row, `${this.tableName}_`);
+                            .assignRow(row, `${this.table}_`);
 
                         relations.forEach((relation, relationIndex) => {
                             model[relation.relatedModelField] = Object.assign({}, this.model).assignRow(
@@ -236,13 +220,13 @@ class DBService<T extends DBModel> {
 
     public findById(id: number) {
         const optionsObject: { [key: string]: any } = Object.create(null);
-        optionsObject[`${this.tableName}.id`] = id;
+        optionsObject[`${this.table}.id`] = id;
 
         return this.find(optionsObject);
     }
 
     public add(model: T) {
-        return DBService.knex(this.tableName)
+        return DBService.knex(this.table)
             .insert(model.parseToRow())
             .then((insertedRowsIds) => {
                 if (insertedRowsIds) {
@@ -252,7 +236,7 @@ class DBService<T extends DBModel> {
     }
 
     public update(model: T, id: number) {
-        return DBService.knex(this.tableName)
+        return DBService.knex(this.table)
             .where("id", id)
             .update(model.parseToRow())
             .then((updatedRowsCount) => {
@@ -263,7 +247,7 @@ class DBService<T extends DBModel> {
     }
 
     public delete(id: number) {
-        return DBService.knex(this.tableName)
+        return DBService.knex(this.table)
             .where("id", id)
             .del();
     }

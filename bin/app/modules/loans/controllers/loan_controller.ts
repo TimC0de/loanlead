@@ -1,6 +1,6 @@
 import Controller from "../../../core/controller";
-import LoanService from "../services/loan_service";
 import get from "../../../core/decorators/get";
+import LoanService from "../services/loan_service";
 
 class LoanController extends Controller {
     public static mappings: Array<{method: string, path: string, callback: (req, res) => any, multipart: boolean}> = [];
@@ -16,7 +16,9 @@ class LoanController extends Controller {
 
     @get("/loans/main")
     public static getMainLoans(req, res) {
-
+        /*
+         @TODO get main loans
+         */
     }
 }
 

@@ -29,7 +29,7 @@ const formatDate = (d: Date): string => {
 
 class MigrationService extends DBService<Dbmodel> {
     public constructor() {
-        super(Dbmodel, "");
+        super(Dbmodel.prototype);
     }
 
     public static migrate() {

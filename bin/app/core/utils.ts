@@ -10,6 +10,10 @@ export default class Utils {
     public static replaceUnderscore(s: string): string {
         return s.replace(/^_w+/, (c: string): string => c.slice(1));
     }
+    
+    public static addUnderscore(s: string): string {
+        return `_${s}`;
+    }
 
     public static capitaliseString(s: string): string {
         return s.charAt(0).toUpperCase() + s.slice(1);

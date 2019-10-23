@@ -1,13 +1,13 @@
 import request from "request";
 import config from "../../../config";
 import DBService from "../../../core/dbservice";
-import Loan from "../../loans/models/loan";
-import SMSMessage from "../models/sms_message";
 import User from "../../bank/models/user";
 import UserService from "../../bank/services/user_service";
 import Customer from "../../loans/models/customer";
-import SMSTemplateService from "./sms_template_service";
+import Loan from "../../loans/models/loan";
+import SMSMessage from "../models/sms_message";
 import SMSTemplate from "../models/sms_template";
+import SMSTemplateService from "./sms_template_service";
 
 const formatDate = (d: Date): string => {
     const month = d.getMonth() + 1 > 9
@@ -42,13 +42,13 @@ class SMSMessageService extends DBService<SMSMessage> {
     }
 
     public findCount() {
-        return SMSMessageService.knex(this.tableName)
+        return SMSMessageService.knex(this.table)
             .count("id as count");
     }
 
     public sendMessage(entityType: string, loan: Loan) {
         DBService.knex("sms_counter")
-            .then((data: Array<{id: number, messages_count: number}>) => {
+            .then((data: Array<{ id: number, messages_count: number }>) => {
                 if (data.length) {
                     const messagesCount: number = data.pop().messages_count;
 
@@ -117,7 +117,7 @@ class SMSMessageService extends DBService<SMSMessage> {
                                             phoneNumber.startsWith("0")
                                                 ? phoneNumber.slice(1)
                                                 : phoneNumber
-                                            }`;
+                                        }`;
 
                                         let url = `${config.messageBaseURL}?`;
 

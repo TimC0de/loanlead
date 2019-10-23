@@ -1,6 +1,4 @@
-import Dbmodel from "../../../core/dbmodel";
 import DBService from "../../../core/dbservice";
-import PhoneNumber from "../../phone_numbers/models/phone_number";
 import User from "../models/user";
 
 class UserService extends DBService<User> {
@@ -9,7 +7,7 @@ class UserService extends DBService<User> {
     }
 
     public fieldIsUnique(field: string, value) {
-        return UserService.knex(this.tableName)
+        return UserService.knex(this.table)
             .where(field, value)
             .then((data) => {
                 return !(data && data.length);
@@ -17,7 +15,7 @@ class UserService extends DBService<User> {
     }
 
     public triggerStatus(user: User) {
-        return UserService.knex(this.tableName)
+        return UserService.knex(this.table)
             .where("id", user.id)
             .update({
                 status: user.status === "online" ? "offline" : "online",
@@ -25,9 +23,9 @@ class UserService extends DBService<User> {
     }
 
     public findOnlineUsers() {
-        return UserService.knex(this.tableName)
+        return UserService.knex(this.table)
             .where("status", "online")
-            .map((row) => Object.assign({}, User.prototype).assignRow(row));
+            .map((row: object) => new User().assignRow(row));
     }
 
     public findForwardedUsers() {
@@ -37,7 +35,7 @@ class UserService extends DBService<User> {
                 "l.status": "Forwarded",
                 "l.actioned_by": "u.employee_id",
             })
-            .map((row) => User.prototype.assignRow(row));
+            .map((row: object) => new User().assignRow(row));
     }
 
     public findUserByEmployeeId(employeeId: string) {

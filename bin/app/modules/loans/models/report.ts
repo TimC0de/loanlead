@@ -1,16 +1,16 @@
-import Dbmodel from "../../../core/dbmodel";
+import DBModel from "../../../core/dbmodel";
 import column from "../../../core/decorators/column";
 import oneToOne from "../../../core/decorators/oneToOne";
 import User from "../../bank/models/user";
 
-class Report extends Dbmodel {
+class Report extends DBModel {
     @column("id")
     private _id?: number;
 
     @column("loan_id")
     private _loanId?: number;
 
-    @oneToOne(User, "employee_id", "user")
+    @oneToOne(User.prototype, "employee_id", "user")
     @column("actioned_by")
     private _actionedBy?: string;
 
@@ -32,7 +32,7 @@ class Report extends Dbmodel {
 
     public static relations: Array<{
         relation: string,
-        dbModel: new <T extends Dbmodel>(model: { [key: string]: any }) => T,
+        dbModel: new <T extends DBModel>(model: { [key: string]: any }) => T,
         targetColumn: string,
         dbModelColumn: string,
         relatedModelField: string,

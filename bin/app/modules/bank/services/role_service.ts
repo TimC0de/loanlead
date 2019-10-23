@@ -7,12 +7,12 @@ class RoleService extends DBService<Role> {
     }
 
     public findCount() {
-        return RoleService.knex(this.tableName)
+        return RoleService.knex(this.table)
             .count("id as count");
     }
 
     public triggerSmsNotifications(id: number, sendSMS: boolean) {
-        return RoleService.knex(this.tableName)
+        return RoleService.knex(this.table)
             .where("id", id)
             .update({
                 send_sms: sendSMS,

@@ -1,9 +1,9 @@
-import Dbmodel from "../../../core/dbmodel";
+import DBModel from "../../../core/dbmodel";
 import column from "../../../core/decorators/column";
-import Relation from "../../../core/interfaces/relation";
 import ManyToManyRelation from "../../../core/interfaces/manyToManyRelation";
+import Relation from "../../../core/interfaces/relation";
 
-class Entity extends Dbmodel {
+class Entity extends DBModel {
     @column("id")
     private _id?: number;
 

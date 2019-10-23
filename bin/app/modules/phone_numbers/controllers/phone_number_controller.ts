@@ -1,11 +1,8 @@
 import Controller from "../../../core/controller";
-import Dbmodel from "../../../core/dbmodel";
 import get from "../../../core/decorators/get";
 import post from "../../../core/decorators/post";
-import put from "../../../core/decorators/put";
 import PhoneNumber from "../models/phone_number";
 import PhoneNumberService from "../services/phone_number_service";
-import Customer from "../../loans/models/customer";
 
 class PhoneNumberController extends Controller {
     private static phoneNumberService: PhoneNumberService = new PhoneNumberService();

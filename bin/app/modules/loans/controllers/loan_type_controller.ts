@@ -1,4 +1,3 @@
-import DBModel from "../../../core/dbmodel";
 import del from "../../../core/decorators/delete";
 import get from "../../../core/decorators/get";
 import post from "../../../core/decorators/post";

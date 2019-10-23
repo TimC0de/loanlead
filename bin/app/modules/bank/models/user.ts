@@ -2,11 +2,11 @@ import DBModel from "../../../core/dbmodel";
 import column from "../../../core/decorators/column";
 import oneToMany from "../../../core/decorators/oneToMany";
 import oneToOne from "../../../core/decorators/oneToOne";
+import ManyToManyRelation from "../../../core/interfaces/manyToManyRelation";
+import Relation from "../../../core/interfaces/relation";
 import PhoneNumber from "../../phone_numbers/models/phone_number";
 import Branch from "./branch";
 import Role from "./role";
-import Relation from "../../../core/interfaces/relation";
-import ManyToManyRelation from "../../../core/interfaces/manyToManyRelation";
 
 class User extends DBModel {
     @column("id")

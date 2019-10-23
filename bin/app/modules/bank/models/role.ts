@@ -1,7 +1,7 @@
 import DBModel from "../../../core/dbmodel";
 import column from "../../../core/decorators/column";
-import Relation from "../../../core/interfaces/relation";
 import ManyToManyRelation from "../../../core/interfaces/manyToManyRelation";
+import Relation from "../../../core/interfaces/relation";
 
 class Role extends DBModel {
     @column("id")

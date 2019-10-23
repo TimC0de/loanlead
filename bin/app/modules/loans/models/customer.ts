@@ -1,13 +1,13 @@
-import Dbmodel from "../../../core/dbmodel";
+import DBModel from "../../../core/dbmodel";
 import column from "../../../core/decorators/column";
 import oneToOne from "../../../core/decorators/oneToOne";
 import PhoneNumber from "../../phone_numbers/models/phone_number";
 
-class Customer extends Dbmodel {
+class Customer extends DBModel {
     @column("id")
     private _id?: number;
 
-    @oneToOne(PhoneNumber, "id", "phoneNumber")
+    @oneToOne(PhoneNumber.prototype, "id", "phoneNumber")
     @column("phone_numbers_id")
     private _phoneNumbersId?: number;
 
@@ -32,7 +32,7 @@ class Customer extends Dbmodel {
 
     public static relations: Array<{
         relation: string,
-        dbModel: new <T extends Dbmodel>(model: { [key: string]: any }) => T,
+        dbModel: new <T extends DBModel>(model: { [key: string]: any }) => T,
         targetColumn: string,
         dbModelColumn: string,
         relatedModelField: string,

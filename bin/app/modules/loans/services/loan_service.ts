@@ -1,6 +1,5 @@
 import DBService from "../../../core/dbservice";
 import Loan from "../models/loan";
-import Dbmodel from "../../../core/dbmodel";
 
 class LoanService extends DBService<Loan> {
     public constructor() {

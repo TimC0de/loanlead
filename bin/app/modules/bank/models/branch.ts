@@ -1,9 +1,9 @@
 import DBModel from "../../../core/dbmodel";
 import column from "../../../core/decorators/column";
 import oneToMany from "../../../core/decorators/oneToMany";
-import Entity from "./entity";
-import Relation from "../../../core/interfaces/relation";
 import ManyToManyRelation from "../../../core/interfaces/manyToManyRelation";
+import Relation from "../../../core/interfaces/relation";
+import Entity from "./entity";
 
 class Branch extends DBModel {
     @column("id")

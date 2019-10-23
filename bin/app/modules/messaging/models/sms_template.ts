@@ -1,16 +1,16 @@
-import Dbmodel from "../../../core/dbmodel";
+import DBModel from "../../../core/dbmodel";
 import column from "../../../core/decorators/column";
 import oneToMany from "../../../core/decorators/oneToMany";
 import Role from "../../bank/models/role";
 
-class SMSTemplate extends Dbmodel {
+class SMSTemplate extends DBModel {
     @column("id")
     private _id?: number;
 
     @column("type")
     private _type?: string;
 
-    @oneToMany(Role, "name", "_stage")
+    @oneToMany(Role.prototype, "name", "_stage")
     @column("stage_id")
     private _stageId?: string;
 
@@ -26,7 +26,7 @@ class SMSTemplate extends Dbmodel {
 
     public static relations: Array<{
         relation: string,
-        dbModel: new <T extends Dbmodel>(model: { [key: string]: any }) => T,
+        dbModel: new <T extends DBModel>(model: { [key: string]: any }) => T,
         targetColumn: string,
         dbModelColumn: string,
         relatedModelField: string,

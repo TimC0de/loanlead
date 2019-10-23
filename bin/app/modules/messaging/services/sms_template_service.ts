@@ -14,7 +14,7 @@ class SMSTemplateService extends DBService<SMSTemplate> {
     }
 
     public findCount() {
-        return SMSTemplateService.knex(this.tableName)
+        return SMSTemplateService.knex(this.table)
             .count("id as count");
     }
 }

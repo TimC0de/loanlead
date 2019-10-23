@@ -1,10 +1,10 @@
 import Controller from "../../../core/controller";
-import SMSTemplateService from "../services/sms_template_service";
+import del from "../../../core/decorators/delete";
 import get from "../../../core/decorators/get";
 import post from "../../../core/decorators/post";
-import SMSTemplate from "../models/sms_template";
 import put from "../../../core/decorators/put";
-import del from "../../../core/decorators/delete";
+import SMSTemplate from "../models/sms_template";
+import SMSTemplateService from "../services/sms_template_service";
 
 const replaceUnderscore = (s: string): string => s.replace("_", "");
 
